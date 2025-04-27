@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:latest
+    env_file:
+      - ../../servers/.env
+    ports:
+      - "5432:5432"
+    networks:
+      - hackcation-network
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+
+  voter-http:
+    build:
+      context: ../../
+      dockerfile: docker/dev/servers/voter-http/Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - ../../servers/.env
+    depends_on:
+      - postgres
+    networks:
+      - hackcation-network
+    volumes:
+      - ../../servers/cmd:/app/cmd
+      - ../../servers/internal:/app/internal
+      - ../../servers/go.mod:/app/go.mod
+      - ../../servers/go.sum:/app/go.sum
+
+networks:
+  hackcation-network:
+    driver: bridge
+
+volumes:
+  postgres-volume: { }
+
