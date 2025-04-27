@@ -8,7 +8,7 @@ services:
     networks:
       - hackcation-network
     volumes:
-      - postgres-volume:/var/lib/postgresql/data
+      - hackcation-postgres-volume:/var/lib/postgresql/data
 
   voter-http:
     build:
@@ -33,5 +33,5 @@ networks:
     driver: bridge
 
 volumes:
-  postgres-volume: { }
+  hackcation-postgres-volume: { }
 
