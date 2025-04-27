@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Hack-cation 2025 event details and map to HeatSync Labs." />
+  
+  <title>Hack-cation 2025</title>
+
+  <!-- External Stylesheet Link (for modularity) -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- temporarily loading Cascading Style Sheets for prototyping -->
+  <style>
+    /* Body Styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #111111;
+      color: #fdf6ee;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      min-height: 100vh;
+    }
+
+    /* Header Styling */
+    header {
+      background: linear-gradient(90deg, #e97451, #ff6f00);
+      color: #000;
+      width: 100%;
+      padding: 20px;
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      border-bottom: 3px solid #ffab76;
+      box-shadow: 0 4px 10px rgba(255, 111, 0, 0.3);
+    }
+
+    /* Section Styling */
+    section {
+      background-color: #1e1e1e;
+      width: 90%;
+      max-width: 800px;
+      margin: 20px 0;
+      padding: 20px;
+      border-radius: 10px;
+      border-left: 6px solid #e97451;
+      box-shadow: 0 4px 20px rgba(255, 111, 0, 0.1);
+    }
+
+    h2 {
+      color: #ffab76;
+    }
+
+    p {
+      line-height: 1.6;
+      color: #fdf6ee;
+    }
+
+    a {
+      color: #ff6f00;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: #ffab76;
+    }
+
+    /* Map Container Styling */
+    .mapContainer {
+      display: none;
+      width: 80vw;
+      height: 80vh;
+      margin-top: 20px;
+    }
+
+    /* Loading Spinner Styling */
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #ff6f00;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+
+    .loading-text {
+      color: #ffab76;
+      font-weight: bold;
+      margin: 10px;
+      display: none;
+    }
+
+    /* iframe Container for Responsive Design */
+    .iframe-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 400px;
+      margin: 0 auto;
+    }
+
+    iframe {
+      max-width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+
+
+  <!-- External JavaScript (for modularity) -->
+  <script defer src="app.js"></script>
+  
+  <!-- temporarily loading JavaScript for prototyping -->
+  <script defer>
+    window.addEventListener('DOMContentLoaded', () => {
+      const openStreetMapLink = document.getElementById('OpenStreetMapShortLink');
+      const eventDetails = document.getElementById('eventDetails');
+      const mapContainer = document.getElementById('mapContainer');
+      const iframe = document.getElementById('osmMap');
+      const loadingText = document.querySelector('.loading-text');
+      const spinner = document.querySelector('.spinner');
+
+      openStreetMapLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        showMap();
+      });
+
+      function showMap() {
+        eventDetails.style.display = 'none';
+        mapContainer.style.display = 'block';
+        iframe.src = 'https://osm.org/go/TlVqlgw68?m=';
+
+        loadingText.style.display = 'block';
+        spinner.style.display = 'block';
+
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const lat = position.coords.latitude;
+              const lon = position.coords.longitude;
+              fetchDirections(lat, lon);
+            },
+            handleGeolocationError
+          );
+        } else {
+          loadingText.textContent = 'Geolocation is not supported by your browser.';
+          spinner.style.display = 'none';
+        }
+      }
+
+      function fetchDirections(lat, lon) {
+        setTimeout(() => {
+          loadingText.style.display = 'none';
+          spinner.style.display = 'none';
+        }, 2000);
+      }
+
+      function handleGeolocationError(error) {
+        let errorMessage = 'Geolocation access denied or failed.';
+        if (error.code === error.PERMISSION_DENIED) {
+          errorMessage += ' Please enable location services to get directions.';
+        }
+
+        loadingText.textContent = errorMessage;
+        spinner.style.display = 'none';
+      }
+    });
+  </script>
+</head>
+
+<body>
+
+  <header>
+    Welcome to Hack-cation 2025: 
+    <br>A Live-Action Pokédex of Innovation! 
+    <br>The first in the series of HACK-CATIONs, but not the last!
+    <br>An 8-Hour Code Quest to Catch Big Ideas, Evolve Skills & Push Boundaries
+  </header>
+
+  <section id="intro">
+    <h2>Your Hackathon Pokédex Has Been Activated...</h2>
+    <p>Hack-cation 2025 isn't just a hackathon it's your entry into the world of digital discovery!...</p>
+  </section>
+
+  <section id="registerYourTrainerInfo">
+    <h2>Register Your Trainer Info!</h2>
+    <p>Click here to enter the Hack-cation Pokédex (tinyurl.com/hackcation2025 [placeholder link replace with your form!])</p>
+  </section>
+
+  <section id="whatIsInYourPokedex">
+    <h2>What’s in Your Pokédex Today?</h2>
+    <p>Fuel Your Trainer Stamina – Free pizza, snacks, and drinks all day...</p>
+  </section>
+
+  <section id="seekingTechProfessors">
+    <h2>Seeking Tech Professors (That’s Presenters!)</h2>
+    <p>Do you have the wisdom of Professor Oak and the passion of a Team Rocket speech...</p>
+  </section>
+
+  <section id="callingAllItemShops">
+    <h2>Calling All Item Shops (Sponsors!)</h2>
+    <p>Partner with us to equip our hackers with the tools, swag, and encouragement they need...</p>
+  </section>
+
+  <section id="whoCanEnterThePokedex">
+    <h2>Who Can Enter the Pokédex?</h2>
+    <p>EVERYONE. You don’t need all 8 Gym Badges just curiosity and the drive to build...</p>
+  </section>
+
+  <section id="postHackPokeBarDebrief">
+    <h2>Post-Hack PokéBar Debrief</h2>
+    <p>After the last code commit, our Trainers will migrate to a nearby local tavern...</p>
+  </section>
+
+  <section id="whyHack-cation">
+    <h2>Why Hack-cation?</h2>
+    <p>Because the journey matters more than the destination...</p>
+  </section>
+
+  <section id="closing">
+    <h2>Hack-cation is your chance to explore, build, and evolve.</h2>
+    <p>So power up your laptop, grab your Pokédex, and join us for an unforgettable 8-hour quest.</p>
+  </section>
+
+  <section id="eventDetails">
+    <h2>Event Details</h2>
+    <p>Date: Saturday, May 24th, 2025</p>
+    <p>Time: 12:00 PM – 8:00 PM</p>
+    <p>Location: HeatSync Labs, 108 W Main St, Mesa, AZ 85201</p>
+
+    <div class="iframe-container">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!..." loading="lazy"></iframe>
+    </div>
+
+    <p><a href="#" id="OpenStreetMapShortLink" aria-label="Open OpenStreetMap">View on OpenStreetMap</a></p>
+  </section>
+
+  <section class="mapContainer" id="mapContainer">
+    <iframe id="osmMap" src="" aria-label="OpenStreetMap View"></iframe>
+  </section>
+
+
+  <form>
+    <p>Select your favorite Pokémon teams:</p>
+    
+    <input type="checkbox" id="team1" name="teams" value="teamMystic">
+    <label for="team1">Team Mystic</label><br>
+
+    <input type="checkbox" id="team2" name="teams" value="teamValor">
+    <label for="team2">Team Valor</label><br>
+
+    <input type="checkbox" id="team3" name="teams" value="teamInstinct">
+    <label for="team3">Team Instinct</label><br>
+
+    <input type="checkbox" id="team4" name="teams" value="teamRocket">
+    <label for="team4">Team Rocket</label><br>
+
+    <input type="checkbox" id="team5" name="teams" value="teamGalactic">
+    <label for="team5">Team Galactic</label><br>
+
+    <input type="submit" value="Submit">
+</form>
+
+
+<form>
+    <label for="teamSelect">Choose your Pokémon team:</label>
+    <select id="teamSelect" name="pokemonTeam" required>
+        <option value="">--Select a team--</option>
+        <option value="teamMystic">Team Mystic</option>
+        <option value="teamValor">Team Valor</option>
+        <option value="teamInstinct">Team Instinct</option>
+        <option value="teamRocket">Team Rocket</option>
+        <option value="teamGalactic">Team Galactic</option>
+    </select>
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
+
+
+
+  <footer>
+    <p>Let’s code, let’s create, and let’s catch 'em all — one idea at a time.</p>
+  </footer>
+
+  <div id="loading-container">
+    <p class="loading-text">Fetching directions...</p>
+    <div class="spinner"></div>
+  </div>
+
+</body>
+
+</html>
