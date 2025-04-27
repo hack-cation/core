@@ -2,14 +2,10 @@
 
 use node v22.14.0
 
-go to Settings tab in the repo site and find the `GitHub Pages` section.
-
-check out more info at https://pages.github.com/
+borrowed from [react router template](https://github.com/remix-run/react-router-templates/blob/main/default/README.md)
 
 ## current dev deployment steps
 
 ```bash
-npx vite
-# or use npm script
 npm run dev
 ```
