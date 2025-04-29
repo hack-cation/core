@@ -36,6 +36,20 @@ func (r *pgRepository) getCampaigns(ctx context.Context) ([]Campaign, error) {
 	return res, nil
 }
 
+func (r *pgRepository) getCampaignById(ctx context.Context, uuid2 uuid.UUID) (*Campaign, error) {
+	query := `SELECT id, name, is_active, created_at, updated_at
+              FROM campaigns
+              WHERE id = $1`
+
+	var res Campaign
+	err := r.db.QueryRowContext(ctx, query).Scan(&res.Id, &res.Name, &res.IsActive, &res.CreatedAt, &res.UpdatedAt)
+	if err != nil {
+		return nil, database.CheckPostgresError(err)
+	}
+
+	return &res, nil
+}
+
 func (r *pgRepository) getProjectsForCampaign(ctx context.Context, campaignId uuid.UUID) ([]Project, error) {
 	query := `SELECT 
     				p.id, 
