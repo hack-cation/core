@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Hack-cation 2025 event details and map to HeatSync Labs." />
   
-  <title>Hack-cation 2025</title>
+  <title>.Hack//cation 2025</title>
 
   <!-- External Stylesheet Link (for modularity) -->
   <link rel="stylesheet" href="styles.css">
@@ -122,6 +122,23 @@
       height: 100%;
       border: none;
     }
+
+    .iframe-container {
+  position: relative;
+  width: 100%;      /* Ensure iframe takes the full width of its container */
+  padding-bottom: 56.25%;  /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.iframe-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
   </style>
 
 
@@ -130,66 +147,152 @@
   
   <!-- temporarily loading JavaScript for prototyping -->
   <script defer>
+    // Wait until the DOM is fully loaded before running this script
     window.addEventListener('DOMContentLoaded', () => {
+      
+      // Get the DOM element for the OpenStreetMap link/button
       const openStreetMapLink = document.getElementById('OpenStreetMapShortLink');
+  
+      // Get the container that shows event details
       const eventDetails = document.getElementById('eventDetails');
+  
+      // Get the container that holds the map iframe
       const mapContainer = document.getElementById('mapContainer');
+  
+      // Get the iframe element that will display the map
       const iframe = document.getElementById('osmMap');
+  
+      // Get the loading text element (to display messages like "Getting your location...")
       const loadingText = document.querySelector('.loading-text');
+  
+      // Get the spinner element (to visually show that something is loading)
       const spinner = document.querySelector('.spinner');
-
+  
+      // Add a click event listener to the map link/button
       openStreetMapLink.addEventListener('click', (e) => {
+        // Prevent the default link behavior (e.g., following the href)
         e.preventDefault();
+  
+        // Call the function to show the map
         showMap();
       });
-
-      function showMap() {
-        eventDetails.style.display = 'none';
-        mapContainer.style.display = 'block';
-        iframe.src = 'https://osm.org/go/TlVqlgw68?m=';
-
-        loadingText.style.display = 'block';
-        spinner.style.display = 'block';
-
-        if (navigator.geolocation) {
+  
+      // Function to show the map and request user's location
+      function showMap(
+        mapUrl = 'https://osm.org/go/TlVqlgw68?m=',       // Default fallback map URL
+        loadingMessage = 'Getting your location...'       // Default loading message
+      ) {
+        try {
+          // Check that all required DOM elements are available
+          if (!eventDetails || !mapContainer || !iframe || !loadingText || !spinner) {
+            console.error("One or more required DOM elements are missing.");
+            return;
+          }
+  
+          // Hide the event details section
+          eventDetails.style.display = 'none';
+  
+          // Show the map container
+          mapContainer.style.display = 'block';
+  
+          // Set the iframe to a basic OpenStreetMap view (before user location is fetched)
+          iframe.src = mapUrl;
+  
+          // Set the loading message and make it visible
+          loadingText.textContent = loadingMessage;
+          loadingText.style.display = 'block';
+  
+          // Show the loading spinner
+          spinner.style.display = 'block';
+  
+          // Check if geolocation is supported by the user's browser
+          if (!navigator.geolocation) {
+            // Show error if not supported
+            loadingText.textContent = 'Geolocation is not supported by your browser.';
+            spinner.style.display = 'none';
+            return;
+          }
+  
+          // Request the user's current location
           navigator.geolocation.getCurrentPosition(
             (position) => {
-              const lat = position.coords.latitude;
-              const lon = position.coords.longitude;
-              fetchDirections(lat, lon);
+              try {
+                // Extract latitude and longitude from the position object
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+  
+                // Call the function to handle the map update with user location
+                fetchDirections(lat, lon);
+              } catch (innerErr) {
+                // Handle any error that occurs while processing the position
+                loadingText.textContent = 'An unexpected error occurred while processing location.';
+                spinner.style.display = 'none';
+                console.error(innerErr);
+              }
             },
-            handleGeolocationError
+            // If the user denies location or another geolocation error occurs, call the error handler
+            (error) => handleGeolocationError(error, mapUrl)
           );
-        } else {
-          loadingText.textContent = 'Geolocation is not supported by your browser.';
+        } catch (err) {
+          // Catch and handle any unexpected error in the overall process
+          loadingText.textContent = 'An unexpected error occurred.';
           spinner.style.display = 'none';
+          console.error(err);
         }
       }
-
+  
+      // Function to simulate fetching directions or updating the map with coordinates
       function fetchDirections(lat, lon) {
-        setTimeout(() => {
-          loadingText.style.display = 'none';
+        try {
+          // Log the coordinates for debugging purposes
+          console.log(`Fetching directions for coordinates: ${lat}, ${lon}`);
+  
+          // Simulate a delay for fetching data (e.g., calling a directions API)
+          setTimeout(() => {
+            // Hide the loading text and spinner after "loading"
+            loadingText.style.display = 'none';
+            spinner.style.display = 'none';
+  
+            // Update the iframe source to center the map on the user's location
+            iframe.src = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`;
+          }, 2000); // Delay is 2 seconds
+        } catch (err) {
+          // If something goes wrong, show a fallback error message
+          loadingText.textContent = 'Failed to load directions.';
           spinner.style.display = 'none';
-        }, 2000);
+          console.error('Error in fetchDirections:', err);
+        }
       }
-
-      function handleGeolocationError(error) {
+  
+      // Function to handle geolocation errors
+      function handleGeolocationError(error, fallbackMapUrl) {
+        // Default error message for most location issues
         let errorMessage = 'Geolocation access denied or failed.';
+  
+        // Add a more specific message if the user explicitly denied location access
         if (error.code === error.PERMISSION_DENIED) {
           errorMessage += ' Please enable location services to get directions.';
         }
-
+  
+        // Set the iframe to the fallback map URL (if provided) or default one
+        iframe.src = fallbackMapUrl || 'https://osm.org/go/TlVqlgw68?m=';
+  
+        // Display the error message and stop the spinner
         loadingText.textContent = errorMessage;
         spinner.style.display = 'none';
       }
-    });
+  
+    }); // End of DOMContentLoaded listener
+
+
   </script>
+  
 </head>
 
 <body>
 
   <header>
-    Welcome to Hack-cation 2025: 
+    Welcome to .Hack//cation 2025: 
     <br>A Live-Action Pokédex of Innovation! 
     <br>The first in the series of HACK-CATIONs, but not the last!
     <br>An 8-Hour Code Quest to Catch Big Ideas, Evolve Skills & Push Boundaries
@@ -202,7 +305,7 @@
 
   <section id="registerYourTrainerInfo">
     <h2>Register Your Trainer Info!</h2>
-    <p>Click here to enter the Hack-cation Pokédex (tinyurl.com/hackcation2025 [placeholder link replace with your form!])</p>
+    <p>Click here to enter the Hack-cation Pokédex (shortlink creatation.com/hackcation2025 [placeholder link replace with the form!])</p>
   </section>
 
   <section id="whatIsInYourPokedex">
@@ -247,8 +350,7 @@
     <p>Location: HeatSync Labs, 108 W Main St, Mesa, AZ 85201</p>
 
     <div class="iframe-container">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!..." loading="lazy"></iframe>
-    </div>
+<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3330.1800380031336!2d-111.83893395162052!3d33.41855026468156!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872ba7e847f7f7a7%3A0x49fc0930c8d07906!2s108%20W%20Main%20St%2C%20Mesa%2C%20AZ%2085201!5e0!3m2!1sen!2sus!4v1745731336432!5m2!1sen!2sus" width="800" height="600" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>    </div>
 
     <p><a href="#" id="OpenStreetMapShortLink" aria-label="Open OpenStreetMap">View on OpenStreetMap</a></p>
   </section>
@@ -258,7 +360,19 @@
   </section>
 
 
+<div class="pokedex">
+    <h2>Team Selector</h2>
+
+    <form>
+      <div class="teamNamingForm"></div>
+      <label for="team1name">Enter team 1 name:</label>
+      <input type="text" id="team1name" name="team1name" placeholder="Team 1 Name">
+       </div>
+    </form>
+
+
   <form>
+    <div class="teamOptionsFromCheckboxesMenu">
     <p>Select your favorite Pokémon teams:</p>
     
     <input type="checkbox" id="team1" name="teams" value="teamMystic">
@@ -277,10 +391,13 @@
     <label for="team5">Team Galactic</label><br>
 
     <input type="submit" value="Submit">
-</form>
+    </div>
+  </form>
 
+  <br><p></p><br>
 
 <form>
+  <div class="teamOptionsFromDropDownMenu">
     <label for="teamSelect">Choose your Pokémon team:</label>
     <select id="teamSelect" name="pokemonTeam" required>
         <option value="">--Select a team--</option>
@@ -290,9 +407,30 @@
         <option value="teamRocket">Team Rocket</option>
         <option value="teamGalactic">Team Galactic</option>
     </select>
-    <br><br>
     <input type="submit" value="Submit">
+  </div>
 </form>
+
+<br><p></p><br>
+
+
+  <form>
+    <div class="teamOptionsFromRadioButtonsMenu">
+      <input type="radio" name="team" value="team1" id="team1">
+      <input type="text" placeholder="Enter Team 1 Name" id="team1name">
+    </div>
+  </form>
+
+  <br><p></p><br>
+
+  <form>
+    <div class="teamOption">
+      <input type="radio" name="team" value="team1" id="team1">
+      <label for="team1">Select Team 1</label>
+    </div>
+  </form>
+
+  </div>
 
 
 
