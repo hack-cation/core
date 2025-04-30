@@ -1,26 +1,25 @@
 FROM node:alpine AS builder
-
 WORKDIR /app
 
-# copy client package files
-COPY ./clients/voter/package.json ./clients/voter/package-lock.json* ./
+COPY ./clients/voter/package*.json ./
 
-# install npm dependencies
-RUN npm ci
+RUN npm install
 
-# copy the rest of the voter client source code
-COPY ./clients/voter/ ./
+COPY ./clients/voter/. .
 
 RUN npm run build
 
-#--
+FROM node:alpine
+WORKDIR /app
 
-# final stage, using nginx to serve
-FROM nginx:alpine
+ENV NODE_ENV=production
 
-# copy built assets from builder stage's dist folder to nginx html directory
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY ./clients/voter/package*.json ./
 
-# nginx listens on port 80
-EXPOSE 80
+RUN npm install --omit=dev
 
+COPY --from=builder /app/build .
+
+EXPOSE 3000
+
+CMD ["node", "server/index.js"]

@@ -14,7 +14,7 @@
     # voter app
     @voter host voter.*
     handle @voter {
-        reverse_proxy voter-app:80
+        reverse_proxy voter-app:3000
     }
 
     # default, goes to home
