@@ -6,11 +6,15 @@ import (
 	"github.com/google/uuid"
 )
 
-type pgRepository struct {
+type PgRepository struct {
 	db *database.Db
 }
 
-func (r *pgRepository) getCampaigns(ctx context.Context) ([]Campaign, error) {
+func NewPgRepository(db *database.Db) *PgRepository {
+	return &PgRepository{db: db}
+}
+
+func (r *PgRepository) getCampaigns(ctx context.Context) ([]Campaign, error) {
 	query := `SELECT id, name, is_active, created_at, updated_at
               FROM campaigns`
 
@@ -36,7 +40,7 @@ func (r *pgRepository) getCampaigns(ctx context.Context) ([]Campaign, error) {
 	return res, nil
 }
 
-func (r *pgRepository) getCampaignById(ctx context.Context, uuid2 uuid.UUID) (*Campaign, error) {
+func (r *PgRepository) getCampaignById(ctx context.Context, uuid2 uuid.UUID) (*Campaign, error) {
 	query := `SELECT id, name, is_active, created_at, updated_at
               FROM campaigns
               WHERE id = $1`
@@ -50,7 +54,7 @@ func (r *pgRepository) getCampaignById(ctx context.Context, uuid2 uuid.UUID) (*C
 	return &res, nil
 }
 
-func (r *pgRepository) getProjectsForCampaign(ctx context.Context, campaignId uuid.UUID) ([]Project, error) {
+func (r *PgRepository) getProjectsForCampaign(ctx context.Context, campaignId uuid.UUID) ([]Project, error) {
 	query := `SELECT 
     				p.id, 
     				p.campaign_id, 
@@ -85,7 +89,7 @@ func (r *pgRepository) getProjectsForCampaign(ctx context.Context, campaignId uu
 	return res, nil
 }
 
-func (r *pgRepository) insertVote(ctx context.Context, projectId uuid.UUID) error {
+func (r *PgRepository) insertVote(ctx context.Context, projectId uuid.UUID) error {
 	query := `INSERT INTO votes (id, project_id) VALUES (uuid_generate_v4(), $2)`
 
 	_, err := r.db.ExecContext(ctx, query, projectId)

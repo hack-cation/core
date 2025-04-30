@@ -1,0 +1,67 @@
+services:
+  postgres:
+    image: postgres:latest
+    env_file:
+      - ../../servers/.env
+    networks:
+      - hackcation-prod-network
+    volumes:
+      - hackcation-prod-postgres-volume:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  voter-http:
+    build:
+      context: ../../
+      dockerfile: docker/prod/servers/voter-http/Dockerfile
+    env_file:
+      - ../../servers/.env
+    depends_on:
+      - postgres
+    networks:
+      - hackcation-prod-network
+    restart: unless-stopped
+
+  home-site:
+    build:
+      context: ../../
+      dockerfile: docker/prod/clients/home/Dockerfile
+    networks:
+      - hackcation-prod-network
+    restart: unless-stopped
+
+  voter-app:
+    build:
+      context: ../../
+      dockerfile: docker/prod/clients/voter/Dockerfile
+    networks:
+      - hackcation-prod-network
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+      - "2019:2019"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - hackcation-prod-caddy-data:/data
+      - hackcation-prod-caddy-config:/config
+    networks:
+      - hackcation-prod-network
+    depends_on:
+      - voter-http
+      - home-site
+      - voter-app
+
+networks:
+  hackcation-prod-network:
+    driver: bridge
+
+volumes:
+  hackcation-prod-postgres-volume: { }
+  hackcation-prod-caddy-data: {}
+  hackcation-prod-caddy-config: {}
+

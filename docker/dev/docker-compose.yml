@@ -6,9 +6,9 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - hackcation-network
+      - hackcation-dev-network
     volumes:
-      - hackcation-postgres-volume:/var/lib/postgresql/data
+      - hackcation-dev-postgres-volume:/var/lib/postgresql/data
 
   voter-http:
     build:
@@ -21,7 +21,7 @@ services:
     depends_on:
       - postgres
     networks:
-      - hackcation-network
+      - hackcation-dev-network
     volumes:
       - ../../servers/cmd:/app/cmd
       - ../../servers/internal:/app/internal
@@ -29,9 +29,9 @@ services:
       - ../../servers/go.sum:/app/go.sum
 
 networks:
-  hackcation-network:
+  hackcation-dev-network:
     driver: bridge
 
 volumes:
-  hackcation-postgres-volume: { }
+  hackcation-dev-postgres-volume: { }
 

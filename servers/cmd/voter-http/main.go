@@ -1,8 +1,10 @@
 package main
 
 import (
+	"api.hackcation.dev/internal/api"
 	"api.hackcation.dev/internal/database"
 	"api.hackcation.dev/internal/env"
+	"api.hackcation.dev/internal/vcs"
 	"context"
 	"errors"
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -10,6 +12,10 @@ import (
 	"os"
 	"os/signal"
 )
+
+type application struct {
+	api *api.Config
+}
 
 func main() {
 	if err := run(); err != nil {
@@ -26,6 +32,16 @@ func run() error {
 		return err
 	}
 	defer db.Close()
+
+	port := env.IntEnv(os.Getenv, "PORT", 8080)
+
+	app := &application{
+		api: api.NewDefaultConfig(port, os.Getenv("ENV"), vcs.Version()),
+	}
+
+	server := app.newServer()
+
+	err = app.api.Serve(ctx, server)
 
 	return nil
 }
