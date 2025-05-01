@@ -1,5 +1,5 @@
 import { Text } from '@phxjs/ui/Text/Text';
-import Logo from '../logo';
+import Logo from '../components/logo/logo';
 
 export const meta = () => [
   { title: '.hack//voter' },

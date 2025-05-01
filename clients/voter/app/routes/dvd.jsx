@@ -1,4 +1,4 @@
-import FourOFour from '../404';
+import DvDScreen from '../components/dvdscreen/dvdscreen';
 
 export const meta = () => [
   { title: '.hack//voter loading' },
@@ -8,7 +8,7 @@ export const meta = () => [
 export default function DvD() {
   return (
     <>
-      <FourOFour />
+      <DvDScreen />
     </>
   );
 }

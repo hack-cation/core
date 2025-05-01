@@ -1,9 +1,9 @@
-import Logo from './logo';
-import './404.css';
+import Logo from '../logo/logo';
+import './dvdscreen.css';
 
-export default function FourOFour() {
+export default function DvDScreen() {
   return (
-    <div className="four-oh-four">
+    <div className="dvd-screen">
       <marquee
         behavior="alternate"
         direction="down"

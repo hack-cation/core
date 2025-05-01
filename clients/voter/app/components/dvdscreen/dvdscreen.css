@@ -14,7 +14,7 @@
   }
 }
 
-.four-oh-four {
+.dvd-screen {
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.8);
@@ -22,11 +22,11 @@
   overflow: hidden;
 }
 
-.four-oh-four > marquee {
+.dvd-screen > marquee {
   width: 100%;
   height: 100%;
 }
 
-.four-oh-four .logo {
+.dvd-screen .logo {
   animation: rainbow 60s linear infinite;
 }

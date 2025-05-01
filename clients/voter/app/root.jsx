@@ -1,7 +1,6 @@
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
-
+import DvDScreen from './components/dvdscreen/dvdscreen';
 import './app.css';
-import FourOFour from './404';
 
 export const links = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -51,7 +50,7 @@ export function ErrorBoundary({ error }) {
 
   return (
     <main>
-      <FourOFour />
+      <DvDScreen />
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && <code>{stack}</code>}
