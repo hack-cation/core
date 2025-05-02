@@ -1,4 +1,4 @@
-FROM node:alpine AS builder
+FROM node:alpine
 WORKDIR /app
 
 COPY ./clients/voter/package*.json ./
@@ -9,17 +9,11 @@ COPY ./clients/voter/. .
 
 RUN npm run build
 
-FROM node:alpine
-WORKDIR /app
+EXPOSE 3000
 
 ENV NODE_ENV=production
 
-COPY ./clients/voter/package*.json ./
+CMD ["npm", "run", "start"]
 
-RUN npm install --omit=dev
 
-COPY --from=builder /app/build .
 
-EXPOSE 3000
-
-CMD ["node", "server/index.js"]

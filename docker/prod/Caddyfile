@@ -1,24 +1,20 @@
 # global options block
 {
     # uncomment the line below to disable automatic HTTPS certificate fetching (for local testing)
-    auto_https off
+    # auto_https off
 }
 
-:80, :443 {
-    # api
-    @api host api.*
-    handle @api {
-        reverse_proxy voter-http:8080
-    }
+# home
+hackcation.dev {
+    reverse_proxy home-site:80
+}
 
-    # voter app
-    @voter host voter.*
-    handle @voter {
-        reverse_proxy voter-app:3000
-    }
+# api subdomain
+api.hackcation.dev {
+    reverse_proxy voter-http:8080
+}
 
-    # default, goes to home
-    handle {
-        reverse_proxy home-site:80
-    }
+# voter app
+voter.hackcation.dev {
+    reverse_proxy voter-app:3000
 }

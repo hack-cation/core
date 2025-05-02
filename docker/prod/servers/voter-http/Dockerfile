@@ -18,7 +18,7 @@ COPY ./servers/internal/ ./internal/
 COPY ./docker/ ./docker/
 COPY ./.git ./.git
 
-# Build the specific service
+# Build
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o main ./cmd/voter-http
 
 # Final stage
