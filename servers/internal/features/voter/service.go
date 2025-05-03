@@ -10,7 +10,7 @@ type Repository interface {
 	getCampaignById(ctx context.Context, uuid2 uuid.UUID) (*Campaign, error)
 	getProjectsForCampaign(ctx context.Context, campaignId uuid.UUID) ([]Project, error)
 	getProjectById(ctx context.Context, uuid2 uuid.UUID) (*Project, error)
-	insertVote(ctx context.Context, projectId uuid.UUID) error
+	insertVotes(ctx context.Context, projectIds []uuid.UUID) error
 }
 
 type Service struct {
@@ -49,19 +49,38 @@ func (s *Service) GetProjectsForCampaign(ctx context.Context, campaignId uuid.UU
 	return s.repo.getProjectsForCampaign(ctx, campaignId)
 }
 
-func (s *Service) InsertVote(ctx context.Context, projectId uuid.UUID) error {
-	proj, err := s.repo.getProjectById(ctx, projectId)
-	if err != nil {
-		return err
+func (s *Service) InsertVotes(ctx context.Context, projectIds []uuid.UUID) error {
+	projs := make([]*Project, 0)
+	for _, projectId := range projectIds {
+		proj, err := s.repo.getProjectById(ctx, projectId)
+		if err != nil {
+			return err
+		}
+		projs = append(projs, proj)
 	}
 
-	camp, err := s.repo.getCampaignById(ctx, proj.CampaignId)
-	if err != nil {
-		return err
-	}
-	if !camp.IsActive {
-		return ErrCampaignNotLive
+	camps := make([]*Campaign, 0)
+	for _, proj := range projs {
+		camp, err := s.repo.getCampaignById(ctx, proj.CampaignId)
+		if err != nil {
+			return err
+		}
+		camps = append(camps, camp)
 	}
 
-	return s.repo.insertVote(ctx, projectId)
+	if len(camps) == 0 {
+		return ErrCampaignNotFound
+	}
+
+	prevCampId := camps[0].Id
+	for _, camp := range camps {
+		if camp.Id != prevCampId {
+			return ErrVotesAreForMultipleCampaigns
+		}
+		if !camp.IsActive {
+			return ErrCampaignNotLive
+		}
+	}
+
+	return s.repo.insertVotes(ctx, projectIds)
 }

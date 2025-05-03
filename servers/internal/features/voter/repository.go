@@ -3,7 +3,9 @@ package voter
 import (
 	"api.hackcation.dev/internal/database"
 	"context"
+	"errors"
 	"github.com/google/uuid"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 type PgRepository struct {
@@ -41,14 +43,40 @@ func (r *PgRepository) getCampaigns(ctx context.Context) ([]Campaign, error) {
 }
 
 func (r *PgRepository) getCampaignById(ctx context.Context, uuid2 uuid.UUID) (*Campaign, error) {
-	query := `SELECT id, name, is_active, created_at, updated_at
+	query := `SELECT id, name, is_active, max_votes, created_at, updated_at
               FROM campaigns
               WHERE id = $1`
 
 	var res Campaign
-	err := r.db.QueryRowContext(ctx, query).Scan(&res.Id, &res.Name, &res.IsActive, &res.CreatedAt, &res.UpdatedAt)
+	err := r.db.QueryRowContext(ctx, query).Scan(&res.Id, &res.Name, &res.IsActive, &res.MaxVotes,
+		&res.CreatedAt, &res.UpdatedAt)
 	if err != nil {
-		return nil, database.CheckPostgresError(err)
+		err = database.CheckPostgresError(err)
+		if errors.Is(err, database.ErrRecordNotFound) {
+			return nil, ErrCampaignNotFound
+		}
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+func (r *PgRepository) getProjectById(ctx context.Context, uuid2 uuid.UUID) (*Project, error) {
+	query := `SELECT p.id, p.campaign_id, p.author, p.git_url, p.created_at, p.updated_at, COUNT(v.id) as vote_count
+              FROM projects p
+              LEFT JOIN votes v ON v.project_id = p.id
+              WHERE p.id = $1
+              GROUP BY p.id, p.campaign_id, p.author, p.created_at, p.updated_at`
+
+	var res Project
+	err := r.db.QueryRowContext(ctx, query, uuid2).Scan(&res.Id, &res.CampaignId, &res.Author, &res.GitUrl,
+		&res.CreatedAt, &res.UpdatedAt, &res.Votes)
+	if err != nil {
+		err = database.CheckPostgresError(err)
+		if errors.Is(err, database.ErrRecordNotFound) {
+			return nil, ErrProjectNotFound
+		}
+		return nil, err
 	}
 
 	return &res, nil
@@ -89,12 +117,23 @@ func (r *PgRepository) getProjectsForCampaign(ctx context.Context, campaignId uu
 	return res, nil
 }
 
-func (r *PgRepository) insertVote(ctx context.Context, projectId uuid.UUID) error {
-	query := `INSERT INTO votes (id, project_id) VALUES (uuid_generate_v4(), $2)`
+func (r *PgRepository) insertVotes(ctx context.Context, projectIds []uuid.UUID) error {
+	if len(projectIds) == 0 {
+		return nil
+	}
 
-	_, err := r.db.ExecContext(ctx, query, projectId)
+	query := `
+       INSERT INTO votes (id, project_id)
+       SELECT uuid_generate_v4(), pid
+       FROM unnest($1) AS pid`
+
+	_, err := r.db.ExecContext(ctx, query, projectIds)
 	if err != nil {
-		return database.CheckPostgresError(err)
+		err = database.CheckPostgresError(err)
+		if errors.Is(err, database.ErrForeignKeyViolation) {
+			return ErrProjectNotFound
+		}
+		return err
 	}
 
 	return nil
