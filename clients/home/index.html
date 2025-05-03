@@ -11,6 +11,17 @@
   <!-- External Stylesheet Link (for modularity) -->
   <link rel="stylesheet" href="styles.css">
 
+
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+
   <!-- temporarily loading Cascading Style Sheets for prototyping -->
   <style>
     /* Body Styling */
@@ -58,7 +69,6 @@
 
     p {
       line-height: 1.6;
-      color: #fdf6ee;
     }
 
     a {
@@ -82,14 +92,9 @@
 
     /* Loading Spinner Styling */
     @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
     .spinner {
       border: 6px solid #f3f3f3;
@@ -108,15 +113,7 @@
       display: none;
     }
 
-    /* iframe Container for Responsive Design */
-    .iframe-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 400px;
-      margin: 0 auto;
-    }
+
 
     iframe {
       max-width: 100%;
@@ -124,34 +121,57 @@
       border: none;
     }
 
-    .iframe-container {
-      position: relative;
-      width: 100%;
-      /* Ensure iframe takes the full width of its container */
-      padding-bottom: 56.25%;
-      /* 16:9 aspect ratio */
-      height: 0;
-      overflow: hidden;
-    }
+/* Responsive iframe container: Mobile-first & scalable */
+.iframe-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+}
 
-    .iframe-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
+/* Responsive iframe inside the container */
+.iframe-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0; /* optional: removes default border */
+}
+
+
+
+    /*  Leaflet Map CSS */
+  #leafletMap {
+    height: 400px;
+    width: 100%;
+    margin-top: 20px;
+    border-radius: 10px;
+  }
+
   </style>
 
 
   <!-- External JavaScript (for modularity) -->
   <script defer src="app.js"></script>
 
+
+    <!-- Leaflet JS -->
+    <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+
   <!-- temporarily loading JavaScript for prototyping -->
   <script defer>
-    // Wait until the DOM is fully loaded before running this script
-    window.addEventListener('DOMContentLoaded', () => {
 
+
+  // Wait until the DOM is fully loaded before running this script
+
+    window.addEventListener('DOMContentLoaded', () => {
       // Get the DOM element for the OpenStreetMap link/button
       const openStreetMapLink = document.getElementById('OpenStreetMapShortLink');
 
@@ -178,6 +198,9 @@
         // Call the function to show the map
         showMap();
       });
+
+
+
 
       // Function to show the map and request user's location
       function showMap(
@@ -243,6 +266,8 @@
         }
       }
 
+
+
       // Function to simulate fetching directions or updating the map with coordinates
       function fetchDirections(lat, lon) {
         try {
@@ -266,28 +291,49 @@
         }
       }
 
+
+
       // Function to handle geolocation errors
       function handleGeolocationError(error, fallbackMapUrl) {
         // Default error message for most location issues
         let errorMessage = 'Geolocation access denied or failed.';
-
         // Add a more specific message if the user explicitly denied location access
         if (error.code === error.PERMISSION_DENIED) {
           errorMessage += ' Please enable location services to get directions.';
         }
-
         // Set the iframe to the fallback map URL (if provided) or default one
         iframe.src = fallbackMapUrl || 'https://osm.org/go/TlVqlgw68?m=';
-
         // Display the error message and stop the spinner
         loadingText.textContent = errorMessage;
         spinner.style.display = 'none';
       }
 
-    }); // End of DOMContentLoaded listener
+      // LEAFLET MAP INIT
+      const heatSyncCoords = [33.41536, -111.8344199];
+      const leafletMapDiv = document.getElementById('leafletMap');
 
+      if (leafletMapDiv) {
+        const leafletMap = L.map('leafletMap').setView(heatSyncCoords, 20);
 
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(leafletMap);
+
+        L.marker(heatSyncCoords)
+          .addTo(leafletMap)
+          .bindPopup('<b>HeatSync Labs</b><br>108 W Main St, Mesa, AZ 85201')
+          .openPopup();
+      }
+    });
+
+  
+  // End of DOMContentLoaded listener
   </script>
+
+
+
 
 </head>
 
@@ -347,6 +393,9 @@
     <p>So power up your laptop, grab your Pokédex, and join us for an unforgettable 8-hour quest.</p>
   </section>
 
+
+
+
   <section id="eventDetails">
     <h2>Event Details</h2>
     <p>Date: Saturday, May 24th, 2025</p>
@@ -356,25 +405,38 @@
     <div class="iframe-container">
       <iframe
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3330.1800380031336!2d-111.83893395162052!3d33.41855026468156!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872ba7e847f7f7a7%3A0x49fc0930c8d07906!2s108%20W%20Main%20St%2C%20Mesa%2C%20AZ%2085201!5e0!3m2!1sen!2sus!4v1745731336432!5m2!1sen!2sus"
-        width="800" height="600" style="border:0;" allowfullscreen="" loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"></iframe>
+        style="border:0;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
     </div>
-
     <p><a href="#" id="OpenStreetMapShortLink" aria-label="Open OpenStreetMap">View on OpenStreetMap</a></p>
+  </section>
+
+  <section id="leafletMapSection">
+    <h2>Interactive Map</h2>
+    <div id="leafletMap" aria-label="Leaflet Map of HeatSync Labs"></div>
   </section>
 
   <section class="mapContainer" id="mapContainer">
     <iframe id="osmMap" src="" aria-label="OpenStreetMap View"></iframe>
   </section>
 
+  <div id="loading-container">
+    <p class="loading-text">Fetching directions...</p>
+    <div class="spinner"></div>
+  </div>
+
+
+
+
 
   <div class="pokedex">
     <h2>Team Selector</h2>
 
     <form>
-      <div class="teamNamingForm"></div>
-      <label for="team1name">Enter team 1 name:</label>
-      <input type="text" id="team1name" name="team1name" placeholder="Team 1 Name">
+      <div class="teamNamingForm">
+      <label for="team1ForNamingForm">Enter team 1 name:</label>
+      <input type="text" id="team1ForNamingForm" name="team1name" placeholder="Team 1 Name">
   </div>
   </form>
 
@@ -383,20 +445,20 @@
     <div class="teamOptionsFromCheckboxesMenu">
       <p>Select your favorite Pokémon teams:</p>
 
-      <input type="checkbox" id="team1" name="teams" value="teamMystic">
-      <label for="team1">Team Mystic</label><br>
+      <input type="checkbox" id="team1FromCheckboxesMenu" name="teams" value="teamMystic">
+      <label for="team1FromCheckboxesMenu">Team Mystic</label><br>
 
-      <input type="checkbox" id="team2" name="teams" value="teamValor">
-      <label for="team2">Team Valor</label><br>
+      <input type="checkbox" id="team2FromCheckboxesMenu" name="teams" value="teamValor">
+      <label for="team2FromCheckboxesMenu">Team Valor</label><br>
 
-      <input type="checkbox" id="team3" name="teams" value="teamInstinct">
-      <label for="team3">Team Instinct</label><br>
+      <input type="checkbox" id="team3FromCheckboxesMenu" name="teams" value="teamInstinct">
+      <label for="team3FromCheckboxesMenu">Team Instinct</label><br>
 
-      <input type="checkbox" id="team4" name="teams" value="teamRocket">
-      <label for="team4">Team Rocket</label><br>
+      <input type="checkbox" id="team4FromCheckboxesMenu" name="teams" value="teamRocket">
+      <label for="team4FromCheckboxesMenu">Team Rocket</label><br>
 
-      <input type="checkbox" id="team5" name="teams" value="teamGalactic">
-      <label for="team5">Team Galactic</label><br>
+      <input type="checkbox" id="team5FromCheckboxesMenu" name="teams" value="teamGalactic">
+      <label for="team5FromCheckboxesMenu">Team Galactic</label><br>
 
       <input type="submit" value="Submit">
     </div>
@@ -422,35 +484,29 @@
 
 
 
-
+<div>
   <p>
   <form>
     <div class="teamOptionsFromRadioButtonsMenu">
-      <input type="radio" name="team" value="team1" id="team1">
-      <input type="text" placeholder="Enter Team 1 Name" id="team1name">
+      <input type="radio" name="team" value="team1" id="team1FromRadioButtonsMenu">
+      <input type="text" placeholder="Enter Team 1 Name" id="team1nameFromRadioButtonsMenu">
     </div>
   </form>
   </p>
-
+</div>
 
 
   <form>
-    <div class="teamOption">
-      <input type="radio" name="team" value="team1" id="team1">
+    <div class="teamOptionsFromChoosingYourOwn">
+      <input type="radio" name="team" value="team1" id="team1FromChoosingYourOwn">
       <label for="team1">Select Team 1</label>
     </div>
   </form>
 
-  </div>
+
   <footer>
     <p>Let’s code, let’s create, and let’s catch 'em all — one idea at a time.</p>
   </footer>
-
-  <div id="loading-container">
-    <p class="loading-text">Fetching directions...</p>
-    <div class="spinner"></div>
-  </div>
-
 </body>
 
 </html>
