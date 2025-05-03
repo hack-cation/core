@@ -8,21 +8,13 @@
 
   <title>.hack//cation 2025</title>
 
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
   <link href="https://unpkg.com/nes.css@2.3.0/css/nes.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
 
-  <!-- External Stylesheet Link (for modularity) -->
   <link rel="stylesheet" href="styles.css">
-
-
-
-  <!-- Leaflet CSS -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
 
   <!-- temporarily loading Cascading Style Sheets for prototyping -->
   <style>
@@ -50,18 +42,25 @@
       font-weight: bold;
       border-bottom: 3px solid #ffab76;
       box-shadow: 0 4px 10px rgba(255, 111, 0, 0.3);
+      position: sticky;
+      top:0;
+      z-index: 1;
     }
+
 
     /* Section Styling */
     section {
       background-color: #1e1e1e;
       width: 90%;
       max-width: 800px;
-      margin: 20px 0;
       padding: 20px;
       border-radius: 10px;
       border-left: 6px solid #e97451;
       box-shadow: 0 4px 20px rgba(255, 111, 0, 0.1);
+    }
+
+    section.nes-container.is-rounded {
+      margin: 20px 0 0;
     }
 
     h2 {
@@ -341,13 +340,17 @@
 <body>
 
   <header>
-    Welcome to <strong>.hack//</strong><code>cation</code> 2025:
-    <br>A Live-Action Pokédex of Innovation!
-    <br>The first in the series of <strong>.hack//</strong><code>cation</code>s, but not the last!
-    <br>An 8-Hour Code Quest to Catch Big Ideas, Evolve Skills & Push Boundaries
+    <strong>.hack//</strong><code>cation</code> 2025!
   </header>
 
-  <section id="intro">
+  <section id="intro1">
+   <h2>A Live-Action Pokédex of Innovation!</h2>
+    The first in the series of <strong>.hack//</strong><code>cation</code>s, but not the last!
+    An 8-Hour Code Quest to Catch Big Ideas, Evolve Skills & Push Boundaries
+  </section>
+
+
+  <section id="intro2">
     <h2>Your Hackathon Pokédex Has Been Activated...</h2>
 
     <p><strong>.hack//</strong><code>cation</code> 2025 isn't just a hackathon. it's your entry into the world of digital discovery!...</p>
@@ -383,7 +386,7 @@
     <p>After the last code commit, our Trainers will migrate to a nearby local tavern...</p>
   </section>
 
-  <section id="why<strong>.hack//</strong><code>cation</code>">
+  <section id="whyHackCation">
     <h2>Why <strong>.hack//</strong><code>cation</code>?</h2>
     <p>Because the journey matters more than the destination...</p>
   </section>
