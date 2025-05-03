@@ -46,8 +46,6 @@ services:
       - "443:443/udp"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-      - hackcation-prod-caddy-data:/data
-      - hackcation-prod-caddy-config:/config
     networks:
       - hackcation-prod-network
     depends_on:
@@ -61,6 +59,4 @@ networks:
 
 volumes:
   hackcation-prod-postgres-volume: { }
-  hackcation-prod-caddy-data: {}
-  hackcation-prod-caddy-config: {}
 
