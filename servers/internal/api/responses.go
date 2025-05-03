@@ -94,7 +94,11 @@ func UniqueViolationResponse(w http.ResponseWriter, r *http.Request, logger *slo
 
 func ConstraintViolationResponse(w http.ResponseWriter, r *http.Request, logger *slog.Logger, field string) {
 	message := fmt.Sprintf("the resource you're trying to create violates a constraint: %s", field)
-	ErrorResponse(w, r, logger, http.StatusConflict, message)
+	ErrorResponse(w, r, logger, http.StatusUnprocessableEntity, message)
+}
+
+func UnprocessableEntityResponse(w http.ResponseWriter, r *http.Request, logger *slog.Logger, err error) {
+	ErrorResponse(w, r, logger, http.StatusUnprocessableEntity, err.Error())
 }
 
 func UnauthorizedResponse(w http.ResponseWriter, r *http.Request, message string, logger *slog.Logger) {

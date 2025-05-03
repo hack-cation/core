@@ -44,7 +44,6 @@ services:
       - "80:80"
       - "443:443"
       - "443:443/udp"
-      - "2019:2019"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - hackcation-prod-caddy-data:/data

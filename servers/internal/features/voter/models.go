@@ -8,6 +8,7 @@ import (
 type Campaign struct {
 	Id        uuid.UUID `json:"id"`
 	Name      string    `json:"name"`
+	MaxVotes  int       `json:"maxVotes"`
 	IsActive  bool      `json:"isActive"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
@@ -18,6 +19,7 @@ type Project struct {
 	CampaignId uuid.UUID `json:"campaignId"`
 	Author     string    `json:"author"`
 	Votes      int       `json:"votes"`
+	GitUrl     string    `json:"gitUrl"`
 	CreatedAt  time.Time `json:"createdAt"`
 	UpdatedAt  time.Time `json:"updatedAt"`
 }

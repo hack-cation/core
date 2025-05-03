@@ -4,17 +4,18 @@ import (
 	"api.hackcation.dev/internal/api"
 	"api.hackcation.dev/internal/database"
 	"api.hackcation.dev/internal/env"
+	"api.hackcation.dev/internal/features/voter"
 	"api.hackcation.dev/internal/vcs"
 	"context"
 	"errors"
-	_ "github.com/jackc/pgx/v5/stdlib"
 	"log"
 	"os"
 	"os/signal"
 )
 
 type application struct {
-	api *api.Config
+	config      *api.Config
+	voteHandler *voter.Handler
 }
 
 func main() {
@@ -33,15 +34,11 @@ func run() error {
 	}
 	defer db.Close()
 
-	port := env.IntEnv(os.Getenv, "PORT", 8080)
-
-	app := &application{
-		api: api.NewDefaultConfig(port, os.Getenv("ENV"), vcs.Version()),
-	}
+	app := newApplication(db)
 
 	server := app.newServer()
 
-	err = app.api.Serve(ctx, server)
+	err = app.config.Serve(ctx, server)
 
 	return nil
 }
@@ -84,4 +81,16 @@ func openDb(ctx context.Context) (*database.Db, error) {
 	}
 
 	return db, nil
+}
+
+func newApplication(db *database.Db) *application {
+	port := env.IntEnv(os.Getenv, "PORT", 8080)
+	config := api.NewDefaultConfig(port, os.Getenv("ENV"), vcs.Version())
+
+	vh := voter.NewHandler(config.Logger, voter.NewService(voter.NewPgRepository(db)))
+
+	return &application{
+		config:      config,
+		voteHandler: vh,
+	}
 }
