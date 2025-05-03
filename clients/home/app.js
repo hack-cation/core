@@ -1,3 +1,4 @@
+// Apply quick hash anchors for fun linking
 {
   document.querySelectorAll('section[id]').forEach((section) => {
     const id = section.id;
