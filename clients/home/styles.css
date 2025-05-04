@@ -1,12 +1,207 @@
-/* reference: https://nostalgic-css.github.io/NES.css/ */
+/* ============================================================================
+   PROJECT: Prototype UI Styles
+   FILE: styles.css
+   PURPOSE: Provides the layout and visual styling for the page during early
+   development (prototyping), including containers, headers, maps, and responsive 
+   iframe handling.
+   ============================================================================ */
 
-html,
-body,
-pre,
-code,
-kbd,
-samp {
-  font-family: 'Press Start 2P', system-ui;
-  font-weight: 400;
-  font-style: normal;
-}
+/* ============================================================================
+   NES.CSS FONT STYLING REFERENCE
+   This block imports the retro-styled "Press Start 2P" font for all major
+   content elements, maintaining a pixel-art aesthetic inspired by classic games.
+
+   REFERENCE: https://nostalgic-css.github.io/NES.css/
+   ============================================================================ */
+
+   html,
+   body,
+   pre,
+   code,
+   kbd,
+   samp {
+     font-family: 'Press Start 2P', system-ui;   /* Use NES.css recommended retro font */
+     font-weight: 400;                           /* Standard weight for clear pixel typeface */
+     font-style: normal;                         /* No italic styling */
+   }
+   
+   
+   /* ============================================================================
+      GENERAL BODY STYLING
+      ============================================================================ */
+   
+   /* Applies a dark background, light text, and flexbox layout to center and stack content */
+   body {
+     background-color: #424242;              /* Dark gray background for contrast */
+     color: #fdf6ee;                         /* Light cream text for readability */
+     margin: 0;                              /* Remove default margin */
+     padding: 0;                             /* Remove default padding */
+     display: flex;                          /* Enable flexbox layout */
+     flex-direction: column;                /* Stack children vertically */
+     align-items: center;                   /* Center items horizontally */
+     justify-content: start;                /* Align items to the top of the page */
+     min-height: 100vh;                     /* Ensure body fills at least full viewport height */
+   }
+   
+   
+   /* ============================================================================
+      HEADER STYLING
+      ============================================================================ */
+   
+   /* Styles the <header> at the top of the page with a gradient background and shadow */
+   header {
+     background: linear-gradient(90deg, #e97451, #ff6f00); /* Horizontal gradient (orange tones) */
+     color: #000;                                          /* Black text for strong contrast */
+     width: 100%;                                          /* Full width of the viewport */
+     padding: 20px;                                        /* Internal spacing */
+     text-align: center;                                   /* Centered text */
+     font-size: 2em;                                       /* Large font size */
+     font-weight: bold;                                    /* Emphasized text */
+     border-bottom: 3px solid #ffab76;                     /* Thin orange border at the bottom */
+     box-shadow: 0 4px 10px rgba(255, 111, 0, 0.3);         /* Subtle drop shadow below header */
+     position: sticky;                                     /* Sticks to top during scroll */
+     top: 0;                                               /* Position from the top edge */
+     z-index: 1;                                           /* Ensures header appears above other elements */
+   }
+   
+   
+   /* ============================================================================
+      SECTION STYLING
+      ============================================================================ */
+   
+   /* Base styles for all <section> elements on the page */
+   section {
+     background-color: #1e1e1e;                            /* Dark background to contrast with body */
+     width: 90%;                                           /* Responsive width (90% of parent) */
+     max-width: 800px;                                     /* Max width to prevent readability issues */
+     padding: 20px;                                        /* Padding inside the section */
+     border-radius: 10px;                                  /* Rounded corners */
+     border-left: 6px solid #e97451;                       /* Orange bar on the left for visual distinction */
+     box-shadow: 0 4px 20px rgba(255, 111, 0, 0.1);         /* Subtle shadow for depth */
+   }
+   
+   /* Additional spacing for styled NES containers */
+   section.nes-container.is-rounded {
+     margin: 20px 0 0;                                     /* Top margin between sections */
+   }
+   
+   
+   /* ============================================================================
+      TYPOGRAPHY STYLING
+      ============================================================================ */
+   
+   /* Style for all section titles */
+   h2 {
+     color: #ffab76;                                       /* Soft orange for section headers */
+   }
+   
+   /* Style for all paragraph text */
+   p {
+     line-height: 1.6;                                     /* Improved line spacing for readability */
+   }
+   
+   /* Base link styling */
+   a {
+     color: #ff6f00;                                       /* Bright orange for links */
+     text-decoration: none;                                /* Remove default underline */
+     font-weight: bold;                                    /* Bold text for visibility */
+   }
+   
+   /* Hover effect for links */
+   a:hover {
+     text-decoration: underline;                           /* Underline on hover for clarity */
+     color: #ffab76;                                       /* Lighter orange on hover */
+   }
+   
+   
+   /* ============================================================================
+      MAP CONTAINER STYLING
+      ============================================================================ */
+   
+   /* Container that holds the map, initially hidden */
+   .mapContainer {
+     display: none;                                        /* Hidden by default until user action */
+     width: 80vw;                                          /* Responsive width (80% of viewport width) */
+     height: 80vh;                                         /* Responsive height (80% of viewport height) */
+     margin-top: 20px;                                     /* Space above the map */
+   }
+   
+   
+   /* ============================================================================
+      LOADING SPINNER STYLING
+      ============================================================================ */
+   
+   /* Define a CSS animation called "spin" */
+   @keyframes spin {
+     0% { transform: rotate(0deg); }                       /* Start rotation */
+     100% { transform: rotate(360deg); }                   /* End rotation (one full circle) */
+   }
+   
+   /* Visual spinner to indicate loading state */
+   .spinner {
+     border: 6px solid #f3f3f3;                            /* Light gray outer border */
+     border-top: 6px solid #ff6f00;                        /* Bright orange top (creates spinner illusion) */
+     border-radius: 50%;                                   /* Makes it circular */
+     width: 40px;                                          /* Width of spinner */
+     height: 40px;                                         /* Height of spinner */
+     animation: spin 1s linear infinite;                   /* Infinite spinning animation */
+     display: none;                                        /* Hidden by default */
+   }
+   
+   /* Text shown during loading next to the spinner */
+   .loading-text {
+     color: #ffab76;                                       /* Soft orange text */
+     font-weight: bold;                                    /* Bold for visibility */
+     margin: 10px;                                         /* Spacing around the text */
+     display: none;                                        /* Hidden by default */
+   }
+   
+   
+   /* ============================================================================
+      EMBEDDED IFRAME STYLING
+      ============================================================================ */
+   
+   /* Base styles for iframe elements */
+   iframe {
+     max-width: 100%;                                      /* Prevents overflow on smaller screens */
+     height: 100%;                                         /* Fills the container vertically */
+     border: none;                                         /* Removes default border */
+   }
+   
+   
+   /* ============================================================================
+      RESPONSIVE IFRAME CONTAINER
+      ============================================================================ */
+   
+   /* Wrapper that ensures iframe maintains aspect ratio (e.g., 16:9) */
+   .iframe-container {
+     position: relative;                                   /* Needed to position iframe absolutely inside */
+     width: 100%;                                          /* Full width of the parent container */
+     padding-bottom: 56.25%;                               /* 16:9 aspect ratio using padding trick */
+     height: 0;                                            /* Height is controlled via padding */
+     overflow: hidden;                                     /* Hides overflowed content */
+   }
+   
+   /* Responsive iframe nested inside its aspect-ratio container */
+   .iframe-container iframe {
+     position: absolute;                                   /* Positioned inside container */
+     top: 0;                                               /* Aligned to top */
+     left: 0;                                              /* Aligned to left */
+     width: 100%;                                          /* Full width of container */
+     height: 100%;                                         /* Full height of container */
+     border: 0;                                            /* Removes iframe border */
+   }
+   
+   
+   /* ============================================================================
+      LEAFLET MAP STYLING
+      ============================================================================ */
+   
+   /* Container specifically for Leaflet map integration */
+   #leafletMap {
+     height: 400px;                                        /* Fixed height for map display */
+     width: 100%;                                          /* Full width of the section */
+     margin-top: 20px;                                     /* Space above the map */
+     border-radius: 10px;                                  /* Rounded corners to match other UI elements */
+   }
+   
