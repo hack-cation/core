@@ -1,73 +1,152 @@
-<div class="pokedex">
-  <h2>Team Selector</h2>
-
-  <form>
-    <div class="teamNamingForm">
-      <label for="team1ForNamingForm">Enter team 1 name:</label>
-      <input type="text" id="team1ForNamingForm" name="team1name" placeholder="Team 1 Name">
-    </div>
-  </form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pokémon Team Selector</title>
 
 
-  <form>
-    <div class="teamOptionsFromCheckboxesMenu">
-      <p>Select your favorite Pokémon teams:</p>
+  <!-- JavaScript section for handling resets and preventing default form behavior -->
+  <script defer>
+    // Handle reset for checkboxes form
+    document.getElementById('resetTeamOptionsFormCheckboxesButtonMenu').addEventListener('click', function (event) {
+      event.preventDefault(); // Prevent button from submitting form
 
-      <input type="checkbox" id="team1FromCheckboxesMenu" name="teams" value="teamMystic">
-      <label for="team1FromCheckboxesMenu">Team Mystic</label><br>
+      // Select all checkbox inputs with name="teams"
+      const checkboxes = document.querySelectorAll('input[type="checkbox"][name="teams"]');
 
-      <input type="checkbox" id="team2FromCheckboxesMenu" name="teams" value="teamValor">
-      <label for="team2FromCheckboxesMenu">Team Valor</label><br>
+      // Loop through each checkbox and uncheck it
+      checkboxes.forEach(function (cb) {
+        cb.checked = false;
+      });
+    });
 
-      <input type="checkbox" id="team3FromCheckboxesMenu" name="teams" value="teamInstinct">
-      <label for="team3FromCheckboxesMenu">Team Instinct</label><br>
+    // Handle reset for dropdown form
+    document.getElementById('resetTeamOptionsFormDropdownButtonMenu').addEventListener('click', function (event) {
+      event.preventDefault(); // Prevent button from submitting form
 
-      <input type="checkbox" id="team4FromCheckboxesMenu" name="teams" value="teamRocket">
-      <label for="team4FromCheckboxesMenu">Team Rocket</label><br>
+      // Reset the dropdown menu to the first option
+      document.getElementById('teamSelect').selectedIndex = 0;
+    });
 
-      <input type="checkbox" id="team5FromCheckboxesMenu" name="teams" value="teamGalactic">
-      <label for="team5FromCheckboxesMenu">Team Galactic</label><br>
+    // Optional: prevent actual form submissions while testing
+    const forms = document.querySelectorAll('form');
+    forms.forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent page reload on submit
+        alert("Form submitted (but blocked for now)."); // Visual feedback
+      });
+    });
+  </script>
 
-      <input type="submit" value="Submit">
-    </div>
-  </form>
+</head>
+<body>
 
-  <br>
-  <p></p><br>
+  <!-- Main container for the team selector interface -->
+  <div class="pokedex">
+    <h2>Team Selector</h2>
 
-  <form method="post" action="/boat">
-    <div class="teamOptionsFromDropDownMenu">
-      <label for="teamSelect">Choose your Pokémon team:</label>
-      <select id="teamSelect" name="pokemonTeam" required>
-        <option value="">--Select a team--</option>
-        <option value="teamMystic">Team Mystic</option>
-        <option value="teamValor">Team Valor</option>
-        <option value="teamInstinct">Team Instinct</option>
-        <option value="teamRocket">Team Rocket</option>
-        <option value="teamGalactic">Team Galactic</option>
-      </select>
-      <button>click here</button>
-      <button type="button">reset</button>
-    </div>
-  </form>
-
-
-
-  <div>
-    <p>
-    <form>
-      <div class="teamOptionsFromRadioButtonsMenu">
-        <input type="radio" name="team" value="team1" id="team1FromRadioButtonsMenu">
-        <input type="text" placeholder="Enter Team 1 Name" id="team1nameFromRadioButtonsMenu">
+    <!-- Optional team naming form -->
+    <form id="teamOptionsForNamingMenu" method="post" action="/">
+      <div class="teamOptionsFromNamingForm">
+        <!-- Input field for naming a team -->
+        <label for="team1ForNamingForm">Enter team 1 name:</label>
+        <input type="text" id="team1ForNamingForm" name="team1name" placeholder="Team 1 Name">
       </div>
     </form>
-    </p>
+
+    <!-- Form with checkboxes to select multiple teams -->
+    <form id="teamOptionsForCheckboxesMenu" method="post" action="/">
+      <div class="teamOptionsFromCheckboxesMenu">
+        <p>Select your favorite Pokémon teams:</p>
+
+        <!-- Checkbox options for Pokémon teams -->
+        <input type="checkbox" id="team1FromCheckboxesMenu" name="teams" value="teamMystic">
+        <label for="team1FromCheckboxesMenu">Team Mystic</label><br>
+
+        <input type="checkbox" id="team2FromCheckboxesMenu" name="teams" value="teamValor">
+        <label for="team2FromCheckboxesMenu">Team Valor</label><br>
+
+        <input type="checkbox" id="team3FromCheckboxesMenu" name="teams" value="teamInstinct">
+        <label for="team3FromCheckboxesMenu">Team Instinct</label><br>
+
+        <input type="checkbox" id="team4FromCheckboxesMenu" name="teams" value="teamRocket">
+        <label for="team4FromCheckboxesMenu">Team Rocket</label><br>
+
+        <input type="checkbox" id="team5FromCheckboxesMenu" name="teams" value="teamGalactic">
+        <label for="team5FromCheckboxesMenu">Team Galactic</label><br>
+
+        <!-- Submit and reset buttons -->
+        <button type="submit">click here</button>
+        <button id="resetTeamOptionsFormCheckboxesButtonMenu" type="button">reset</button>
+      </div>
+    </form>
+
+
+
+    <!-- Form with checkboxes to select multiple teams -->
+    <form id="teamOptionsForCheckboxesMenu" method="post" action="/">
+      <div class="teamOptionsFromCheckboxesMenu">
+        <p>Select your favorite Pokémon teams:</p>
+    
+        <!-- Checkbox options for Pokémon teams -->
+        <input type="checkbox" id="team1FromCheckboxesMenu" name="teams" value="teamMystic">
+        <label for="team1FromCheckboxesMenu">Team Mystic</label><br>
+    
+        <input type="checkbox" id="team2FromCheckboxesMenu" name="teams" value="teamValor">
+        <label for="team2FromCheckboxesMenu">Team Valor</label><br>
+    
+        <input type="checkbox" id="team3FromCheckboxesMenu" name="teams" value="teamInstinct">
+        <label for="team3FromCheckboxesMenu">Team Instinct</label><br>
+    
+        <input type="checkbox" id="team4FromCheckboxesMenu" name="teams" value="teamRocket">
+        <label for="team4FromCheckboxesMenu">Team Rocket</label><br>
+    
+        <input type="checkbox" id="team5FromCheckboxesMenu" name="teams" value="teamGalactic">
+        <label for="team5FromCheckboxesMenu">Team Galactic</label><br>
+    
+        <!-- Submit button -->
+        <button type="submit">click here</button>
+    
+        <!-- Javascript reset button -->
+        <button id="resetTeamOptionsFormCheckboxesButtonMenu" type="button">reset</button>
+    
+        <!-- inline onclick reset button -->
+        <button type="button" id="teamOptionsForCheckboxesMenu" onclick="document.getElementById('teamOptionsForCheckboxesMenu').reset()">reset (inline)</button>
+      </div>
+    </form>
+
+    <!-- Visual spacing (can be styled or removed) -->
+    <br><p></p><br>
+
+    <!-- Form with a dropdown to select one team -->
+    <form id="teamOptionsForDropdownMenu" method="post" action="/">
+      <div class="teamOptionsFromDropDownMenu">
+        <!-- Dropdown label -->
+        <label for="teamSelect">Choose your Pokémon team:</label>
+
+        <!-- Dropdown select menu -->
+        <select id="teamSelect" name="pokemonTeam" required>
+          <option value="">--Select a team--</option>
+          <option value="teamMystic">Team Mystic</option>
+          <option value="teamValor">Team Valor</option>
+          <option value="teamInstinct">Team Instinct</option>
+          <option value="teamRocket">Team Rocket</option>
+          <option value="teamGalactic">Team Galactic</option>
+        </select>
+
+        <!-- Submit and reset buttons -->
+        <button type="submit">click here</button>
+
+        <!-- Javascript reset button -->
+        <button id="resetTeamOptionsFormDropdownButtonMenu" type="button">reset</button>
+
+        <!-- inline onclick reset button -->
+        <button type="button" id="teamOptionsForDropdownMenu" onclick="document.getElementById('teamOptionsForDropdownMenu').reset()">reset</button>
+      </div>
+    </form>
   </div>
 
 
-  <form>
-    <div class="teamOptionsFromChoosingYourOwn">
-      <input type="radio" name="team" value="team1" id="team1FromChoosingYourOwn">
-      <label for="team1">Select Team 1</label>
-    </div>
-  </form>
+
+</body>
+</html>

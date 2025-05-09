@@ -16,324 +16,17 @@
 
   <link rel="stylesheet" href="styles.css">
 
-  <!-- temporarily loading Cascading Style Sheets for prototyping -->
-  <style>
-    /* Body Styling */
-    body {
-      background-color: #424242;
-      color: #fdf6ee;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: start;
-      min-height: 100vh;
-    }
-
-    /* Header Styling */
-    header {
-      background: linear-gradient(90deg, #e97451, #ff6f00);
-      color: #000;
-      width: 100%;
-      padding: 20px;
-      text-align: center;
-      font-size: 2em;
-      font-weight: bold;
-      border-bottom: 3px solid #ffab76;
-      box-shadow: 0 4px 10px rgba(255, 111, 0, 0.3);
-      position: sticky;
-      top:0;
-      z-index: 1;
-    }
-
-
-    /* Section Styling */
-    section {
-      background-color: #1e1e1e;
-      width: 90%;
-      max-width: 800px;
-      padding: 20px;
-      border-radius: 10px;
-      border-left: 6px solid #e97451;
-      box-shadow: 0 4px 20px rgba(255, 111, 0, 0.1);
-    }
-
-    section.nes-container.is-rounded {
-      margin: 20px 0 0;
-    }
-
-    h2 {
-      color: #ffab76;
-    }
-
-    p {
-      line-height: 1.6;
-    }
-
-    a {
-      color: #ff6f00;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    a:hover {
-      text-decoration: underline;
-      color: #ffab76;
-    }
-
-    /* Map Container Styling */
-    .mapContainer {
-      display: none;
-      width: 80vw;
-      height: 80vh;
-      margin-top: 20px;
-    }
-
-    /* Loading Spinner Styling */
-    @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-    .spinner {
-      border: 6px solid #f3f3f3;
-      border-top: 6px solid #ff6f00;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      display: none;
-    }
-
-    .loading-text {
-      color: #ffab76;
-      font-weight: bold;
-      margin: 10px;
-      display: none;
-    }
-
-
-
-    iframe {
-      max-width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-/* Responsive iframe container: Mobile-first & scalable */
-.iframe-container {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
-  height: 0;
-  overflow: hidden;
-}
-
-/* Responsive iframe inside the container */
-.iframe-container iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 0; /* optional: removes default border */
-}
-
-
-
-    /*  Leaflet Map CSS */
-  #leafletMap {
-    height: 400px;
-    width: 100%;
-    margin-top: 20px;
-    border-radius: 10px;
-  }
-
-  </style>
-
-
   <!-- External JavaScript (for modularity) -->
-  <script defer src="app.js"></script>
-
+  <script defer src="app.js">
+  </script>
 
     <!-- Leaflet JS -->
     <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""
-  ></script>
-
-
-  <!-- temporarily loading JavaScript for prototyping -->
-  <script defer>
-
-
-  // Wait until the DOM is fully loaded before running this script
-
-    window.addEventListener('DOMContentLoaded', () => {
-      // Get the DOM element for the OpenStreetMap link/button
-      const openStreetMapLink = document.getElementById('OpenStreetMapShortLink');
-
-      // Get the container that shows event details
-      const eventDetails = document.getElementById('eventDetails');
-
-      // Get the container that holds the map iframe
-      const mapContainer = document.getElementById('mapContainer');
-
-      // Get the iframe element that will display the map
-      const iframe = document.getElementById('osmMap');
-
-      // Get the loading text element (to display messages like "Getting your location...")
-      const loadingText = document.querySelector('.loading-text');
-
-      // Get the spinner element (to visually show that something is loading)
-      const spinner = document.querySelector('.spinner');
-
-      // Add a click event listener to the map link/button
-      openStreetMapLink.addEventListener('click', (e) => {
-        // Prevent the default link behavior (e.g., following the href)
-        e.preventDefault();
-
-        // Call the function to show the map
-        showMap();
-      });
-
-
-
-
-      // Function to show the map and request user's location
-      function showMap(
-        mapUrl = 'https://osm.org/go/TlVqlgw68?m=',       // Default fallback map URL
-        loadingMessage = 'Getting your location...'       // Default loading message
-      ) {
-        try {
-          // Check that all required DOM elements are available
-          if (!eventDetails || !mapContainer || !iframe || !loadingText || !spinner) {
-            console.error("One or more required DOM elements are missing.");
-            return;
-          }
-
-          // Hide the event details section
-          eventDetails.style.display = 'none';
-
-          // Show the map container
-          mapContainer.style.display = 'block';
-
-          // Set the iframe to a basic OpenStreetMap view (before user location is fetched)
-          iframe.src = mapUrl;
-
-          // Set the loading message and make it visible
-          loadingText.textContent = loadingMessage;
-          loadingText.style.display = 'block';
-
-          // Show the loading spinner
-          spinner.style.display = 'block';
-
-          // Check if geolocation is supported by the user's browser
-          if (!navigator.geolocation) {
-            // Show error if not supported
-            loadingText.textContent = 'Geolocation is not supported by your browser.';
-            spinner.style.display = 'none';
-            return;
-          }
-
-          // Request the user's current location
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              try {
-                // Extract latitude and longitude from the position object
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-
-                // Call the function to handle the map update with user location
-                fetchDirections(lat, lon);
-              } catch (innerErr) {
-                // Handle any error that occurs while processing the position
-                loadingText.textContent = 'An unexpected error occurred while processing location.';
-                spinner.style.display = 'none';
-                console.error(innerErr);
-              }
-            },
-            // If the user denies location or another geolocation error occurs, call the error handler
-            (error) => handleGeolocationError(error, mapUrl)
-          );
-        } catch (err) {
-          // Catch and handle any unexpected error in the overall process
-          loadingText.textContent = 'An unexpected error occurred.';
-          spinner.style.display = 'none';
-          console.error(err);
-        }
-      }
-
-
-
-      // Function to simulate fetching directions or updating the map with coordinates
-      function fetchDirections(lat, lon) {
-        try {
-          // Log the coordinates for debugging purposes
-          console.log(`Fetching directions for coordinates: ${lat}, ${lon}`);
-
-          // Simulate a delay for fetching data (e.g., calling a directions API)
-          setTimeout(() => {
-            // Hide the loading text and spinner after "loading"
-            loadingText.style.display = 'none';
-            spinner.style.display = 'none';
-
-            // Update the iframe source to center the map on the user's location
-            iframe.src = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`;
-          }, 2000); // Delay is 2 seconds
-        } catch (err) {
-          // If something goes wrong, show a fallback error message
-          loadingText.textContent = 'Failed to load directions.';
-          spinner.style.display = 'none';
-          console.error('Error in fetchDirections:', err);
-        }
-      }
-
-
-
-      // Function to handle geolocation errors
-      function handleGeolocationError(error, fallbackMapUrl) {
-        // Default error message for most location issues
-        let errorMessage = 'Geolocation access denied or failed.';
-        // Add a more specific message if the user explicitly denied location access
-        if (error.code === error.PERMISSION_DENIED) {
-          errorMessage += ' Please enable location services to get directions.';
-        }
-        // Set the iframe to the fallback map URL (if provided) or default one
-        iframe.src = fallbackMapUrl || 'https://osm.org/go/TlVqlgw68?m=';
-        // Display the error message and stop the spinner
-        loadingText.textContent = errorMessage;
-        spinner.style.display = 'none';
-      }
-
-      // LEAFLET MAP INIT
-      const heatSyncCoords = [33.41536, -111.8344199];
-      const leafletMapDiv = document.getElementById('leafletMap');
-
-      if (leafletMapDiv) {
-        const leafletMap = L.map('leafletMap').setView(heatSyncCoords, 20);
-
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(leafletMap);
-
-        L.marker(heatSyncCoords)
-          .addTo(leafletMap)
-          .bindPopup('<b>HeatSync Labs</b><br>108 W Main St, Mesa, AZ 85201')
-          .openPopup();
-      }
-    });
-
-
-  // End of DOMContentLoaded listener
-  </script>
-
-
-
+    >
+    </script>
 
 </head>
 
@@ -396,9 +89,6 @@
     <p>So power up your laptop, grab your Pokédex, and join us for an unforgettable 8-hour quest.</p>
   </section>
 
-
-
-
   <section id="eventDetails">
     <h2>Event Details</h2>
     <p>Date: Saturday, May 24th, 2025</p>
@@ -429,11 +119,10 @@
     <div class="spinner"></div>
   </div>
 
-
-
   <footer>
     <p>Let’s code, let’s create, and let’s catch 'em all — one idea at a time.</p>
   </footer>
+  
 </body>
 
 </html>
