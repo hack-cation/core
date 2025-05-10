@@ -43,7 +43,7 @@
 
   <!-- Main container for the team selector interface -->
   <div class="pokedex">
-    <h2>Team Selector</h2>
+    <h2>Pokémon Team Selector Page</h2>
 
     <!-- Optional team naming form -->
     <form id="teamOptionsForNamingMenu" method="post" action="/">
@@ -53,34 +53,6 @@
         <input type="text" id="team1ForNamingForm" name="team1name" placeholder="Team 1 Name">
       </div>
     </form>
-
-    <!-- Form with checkboxes to select multiple teams -->
-    <form id="teamOptionsForCheckboxesMenu" method="post" action="/">
-      <div class="teamOptionsFromCheckboxesMenu">
-        <p>Select your favorite Pokémon teams:</p>
-
-        <!-- Checkbox options for Pokémon teams -->
-        <input type="checkbox" id="team1FromCheckboxesMenu" name="teams" value="teamMystic">
-        <label for="team1FromCheckboxesMenu">Team Mystic</label><br>
-
-        <input type="checkbox" id="team2FromCheckboxesMenu" name="teams" value="teamValor">
-        <label for="team2FromCheckboxesMenu">Team Valor</label><br>
-
-        <input type="checkbox" id="team3FromCheckboxesMenu" name="teams" value="teamInstinct">
-        <label for="team3FromCheckboxesMenu">Team Instinct</label><br>
-
-        <input type="checkbox" id="team4FromCheckboxesMenu" name="teams" value="teamRocket">
-        <label for="team4FromCheckboxesMenu">Team Rocket</label><br>
-
-        <input type="checkbox" id="team5FromCheckboxesMenu" name="teams" value="teamGalactic">
-        <label for="team5FromCheckboxesMenu">Team Galactic</label><br>
-
-        <!-- Submit and reset buttons -->
-        <button type="submit">click here</button>
-        <button id="resetTeamOptionsFormCheckboxesButtonMenu" type="button">reset</button>
-      </div>
-    </form>
-
 
 
     <!-- Form with checkboxes to select multiple teams -->
@@ -105,13 +77,13 @@
         <label for="team5FromCheckboxesMenu">Team Galactic</label><br>
     
         <!-- Submit button -->
-        <button type="submit">click here</button>
+        <button type="submit">click here to submit</button>
     
         <!-- Javascript reset button -->
         <button id="resetTeamOptionsFormCheckboxesButtonMenu" type="button">reset</button>
     
-        <!-- inline onclick reset button -->
-        <button type="button" id="teamOptionsForCheckboxesMenu" onclick="document.getElementById('teamOptionsForCheckboxesMenu').reset()">reset (inline)</button>
+         <!-- inline onclick reset button -->
+         <button type="button" id="teamOptionsForCheckboxesMenu" onclick="document.getElementById('teamOptionsForCheckboxesMenu').reset()">reset onclick inline</button>
       </div>
     </form>
 
@@ -135,13 +107,13 @@
         </select>
 
         <!-- Submit and reset buttons -->
-        <button type="submit">click here</button>
+        <button type="submit">click here to submit</button>
 
         <!-- Javascript reset button -->
         <button id="resetTeamOptionsFormDropdownButtonMenu" type="button">reset</button>
 
         <!-- inline onclick reset button -->
-        <button type="button" id="teamOptionsForDropdownMenu" onclick="document.getElementById('teamOptionsForDropdownMenu').reset()">reset</button>
+        <button type="button" id="teamOptionsForDropdownMenu" onclick="document.getElementById('teamOptionsForDropdownMenu').reset()">reset onclick inline</button>
       </div>
     </form>
   </div>
