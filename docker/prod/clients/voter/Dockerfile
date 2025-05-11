@@ -15,7 +15,7 @@ WORKDIR /app
 RUN npm run build
 
 FROM node:20-alpine
-COPY clients/vote/package.json clients/voter/package-lock.json /app/
+COPY clients/voter/package.json clients/voter/package-lock.json /app/
 COPY --from=production-dependencies-env /app/node_modules /app/node_modules
 COPY --from=build-env /app/build /app/build
 WORKDIR /app
