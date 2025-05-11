@@ -9,6 +9,7 @@ type Campaign struct {
 	Id        uuid.UUID `json:"id"`
 	Name      string    `json:"name"`
 	MaxVotes  int       `json:"maxVotes"`
+	EventDate time.Time `json:"eventDate"`
 	IsActive  bool      `json:"isActive"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`

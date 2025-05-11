@@ -2,6 +2,7 @@ package voter
 
 import (
 	"context"
+	"fmt"
 	"github.com/google/uuid"
 )
 
@@ -29,22 +30,6 @@ func (s *Service) GetCampaignById(ctx context.Context, uuid uuid.UUID) (*Campaig
 	return s.repo.getCampaignById(ctx, uuid)
 }
 
-func (s *Service) GetLiveCampaigns(ctx context.Context) ([]Campaign, error) {
-	campaigns, err := s.repo.getCampaigns(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	res := make([]Campaign, 0)
-	for _, campaign := range campaigns {
-		if campaign.IsActive {
-			res = append(res, campaign)
-		}
-	}
-
-	return res, nil
-}
-
 func (s *Service) GetProjectsForCampaign(ctx context.Context, campaignId uuid.UUID) ([]Project, error) {
 	return s.repo.getProjectsForCampaign(ctx, campaignId)
 }
@@ -54,7 +39,7 @@ func (s *Service) InsertVotes(ctx context.Context, projectIds []uuid.UUID) error
 	for _, projectId := range projectIds {
 		proj, err := s.repo.getProjectById(ctx, projectId)
 		if err != nil {
-			return err
+			return fmt.Errorf("error retrieving project by id: %w", err)
 		}
 		projs = append(projs, proj)
 	}

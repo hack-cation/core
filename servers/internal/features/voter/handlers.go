@@ -13,7 +13,6 @@ import (
 type voterService interface {
 	GetCampaigns(ctx context.Context) ([]Campaign, error)
 	GetCampaignById(ctx context.Context, uuid uuid.UUID) (*Campaign, error)
-	GetLiveCampaigns(ctx context.Context) ([]Campaign, error)
 	GetProjectsForCampaign(ctx context.Context, campaignId uuid.UUID) ([]Project, error)
 	InsertVotes(ctx context.Context, projectIds []uuid.UUID) error
 }
@@ -30,12 +29,12 @@ func NewHandler(logger *slog.Logger, service voterService) *Handler {
 	}
 }
 
-func (h *Handler) GetLiveCampaigns() http.Handler {
+func (h *Handler) GetCampaigns() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(r.Context(), api.DefaultContextTimeout)
 		defer cancel()
 
-		campaigns, err := h.service.GetLiveCampaigns(ctx)
+		campaigns, err := h.service.GetCampaigns(ctx)
 		if err != nil {
 			switch {
 			case errors.Is(err, context.DeadlineExceeded):

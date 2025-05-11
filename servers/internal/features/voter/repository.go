@@ -4,6 +4,7 @@ import (
 	"api.hackcation.dev/internal/database"
 	"context"
 	"errors"
+	"fmt"
 	"github.com/google/uuid"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
@@ -17,7 +18,7 @@ func NewPgRepository(db *database.Db) *PgRepository {
 }
 
 func (r *PgRepository) getCampaigns(ctx context.Context) ([]Campaign, error) {
-	query := `SELECT id, name, is_active, created_at, updated_at
+	query := `SELECT id, name, is_active, event_date, max_votes, created_at, updated_at
               FROM campaigns`
 
 	rows, err := r.db.QueryContext(ctx, query)
@@ -28,7 +29,8 @@ func (r *PgRepository) getCampaigns(ctx context.Context) ([]Campaign, error) {
 	res := make([]Campaign, 0)
 	for rows.Next() {
 		var campaign Campaign
-		err := rows.Scan(&campaign.Id, &campaign.Name, &campaign.IsActive, &campaign.CreatedAt, &campaign.UpdatedAt)
+		err := rows.Scan(&campaign.Id, &campaign.Name, &campaign.IsActive, &campaign.EventDate, &campaign.MaxVotes,
+			&campaign.CreatedAt, &campaign.UpdatedAt)
 		if err != nil {
 			return nil, database.CheckPostgresError(err)
 		}
@@ -42,13 +44,13 @@ func (r *PgRepository) getCampaigns(ctx context.Context) ([]Campaign, error) {
 	return res, nil
 }
 
-func (r *PgRepository) getCampaignById(ctx context.Context, uuid2 uuid.UUID) (*Campaign, error) {
-	query := `SELECT id, name, is_active, max_votes, created_at, updated_at
+func (r *PgRepository) getCampaignById(ctx context.Context, id uuid.UUID) (*Campaign, error) {
+	query := `SELECT id, name, is_active, event_date, max_votes, created_at, updated_at
               FROM campaigns
               WHERE id = $1`
 
 	var res Campaign
-	err := r.db.QueryRowContext(ctx, query).Scan(&res.Id, &res.Name, &res.IsActive, &res.MaxVotes,
+	err := r.db.QueryRowContext(ctx, query, id).Scan(&res.Id, &res.Name, &res.IsActive, &res.EventDate, &res.MaxVotes,
 		&res.CreatedAt, &res.UpdatedAt)
 	if err != nil {
 		err = database.CheckPostgresError(err)
@@ -61,7 +63,7 @@ func (r *PgRepository) getCampaignById(ctx context.Context, uuid2 uuid.UUID) (*C
 	return &res, nil
 }
 
-func (r *PgRepository) getProjectById(ctx context.Context, uuid2 uuid.UUID) (*Project, error) {
+func (r *PgRepository) getProjectById(ctx context.Context, id uuid.UUID) (*Project, error) {
 	query := `SELECT p.id, p.campaign_id, p.author, p.git_url, p.created_at, p.updated_at, COUNT(v.id) as vote_count
               FROM projects p
               LEFT JOIN votes v ON v.project_id = p.id
@@ -69,7 +71,7 @@ func (r *PgRepository) getProjectById(ctx context.Context, uuid2 uuid.UUID) (*Pr
               GROUP BY p.id, p.campaign_id, p.author, p.created_at, p.updated_at`
 
 	var res Project
-	err := r.db.QueryRowContext(ctx, query, uuid2).Scan(&res.Id, &res.CampaignId, &res.Author, &res.GitUrl,
+	err := r.db.QueryRowContext(ctx, query, id).Scan(&res.Id, &res.CampaignId, &res.Author, &res.GitUrl,
 		&res.CreatedAt, &res.UpdatedAt, &res.Votes)
 	if err != nil {
 		err = database.CheckPostgresError(err)
@@ -86,14 +88,15 @@ func (r *PgRepository) getProjectsForCampaign(ctx context.Context, campaignId uu
 	query := `SELECT 
     				p.id, 
     				p.campaign_id, 
-    				p.author, 
+    				p.author,
+    				p.git_url,
     				p.created_at,
     				p.updated_at,
     				COUNT(v.id) as vote_count
               FROM projects p
               LEFT JOIN votes v ON v.project_id = p.id
               WHERE p.campaign_id = $1
-              GROUP BY p.id, p.campaign_id, p.author, p.created_at, p.updated_at `
+              GROUP BY p.id, p.campaign_id, p.author, p.created_at, p.updated_at`
 
 	rows, err := r.db.QueryContext(ctx, query, campaignId)
 	if err != nil {
@@ -103,11 +106,13 @@ func (r *PgRepository) getProjectsForCampaign(ctx context.Context, campaignId uu
 	res := make([]Project, 0)
 	for rows.Next() {
 		var project Project
-		err := rows.Scan(&project.Id, &project.CampaignId, &project.Author, &project.CreatedAt, &project.UpdatedAt,
-			&project.Votes)
+		err := rows.Scan(&project.Id, &project.CampaignId, &project.Author, &project.GitUrl, &project.CreatedAt,
+			&project.UpdatedAt, &project.Votes)
 		if err != nil {
 			return nil, database.CheckPostgresError(err)
 		}
+
+		res = append(res, project)
 	}
 
 	if err := rows.Err(); err != nil {
@@ -125,7 +130,7 @@ func (r *PgRepository) insertVotes(ctx context.Context, projectIds []uuid.UUID) 
 	query := `
        INSERT INTO votes (id, project_id)
        SELECT uuid_generate_v4(), pid
-       FROM unnest($1) AS pid`
+       FROM unnest($1::uuid[]) AS pid`
 
 	_, err := r.db.ExecContext(ctx, query, projectIds)
 	if err != nil {
@@ -133,7 +138,7 @@ func (r *PgRepository) insertVotes(ctx context.Context, projectIds []uuid.UUID) 
 		if errors.Is(err, database.ErrForeignKeyViolation) {
 			return ErrProjectNotFound
 		}
-		return err
+		return fmt.Errorf("error inserting votes in repository: %w", err)
 	}
 
 	return nil
