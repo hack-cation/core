@@ -51,7 +51,7 @@ services:
     networks:
       - hackcation-prod-network
     depends_on:
-      - voter-http
+      - voter-server
       - home-site
       - voter-app
 
