@@ -18,7 +18,7 @@ COPY ./servers/internal/ ./internal/
 COPY ./docker/ ./docker/
 
 # Copy the Air configuration file directly to the root
-COPY ./docker/dev/servers/voter-http/.air.toml ./.air.toml
+COPY ./docker/dev/servers/voter/.air.toml ./.air.toml
 
 # Command to run Air for hot reloading
 CMD ["air", "-c", "./.air.toml"]

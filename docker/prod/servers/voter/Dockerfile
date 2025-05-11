@@ -19,7 +19,7 @@ COPY ./docker/ ./docker/
 COPY ./.git ./.git
 
 # Build
-RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o main ./cmd/voter-http
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o main ./cmd/voter
 
 # Final stage
 FROM --platform=$TARGETPLATFORM alpine:latest

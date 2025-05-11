@@ -10,10 +10,10 @@ services:
     volumes:
       - hackcation-dev-postgres-volume:/var/lib/postgresql/data
 
-  voter-http:
+  voter-server:
     build:
       context: ../../
-      dockerfile: docker/dev/servers/voter-http/Dockerfile
+      dockerfile: docker/dev/servers/voter/Dockerfile
     ports:
       - "8080:8080"
     env_file:
@@ -27,6 +27,18 @@ services:
       - ../../servers/internal:/app/internal
       - ../../servers/go.mod:/app/go.mod
       - ../../servers/go.sum:/app/go.sum
+
+  voter-app:
+    build:
+      context: ../../
+      dockerfile: docker/dev/clients/voter/Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - voter-server
+    networks:
+      - hackcation-dev-network
+
 
 networks:
   hackcation-dev-network:

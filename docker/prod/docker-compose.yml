@@ -9,10 +9,10 @@ services:
       - hackcation-prod-postgres-volume:/var/lib/postgresql/data
     restart: unless-stopped
 
-  voter-http:
+  voter-server:
     build:
       context: ../../
-      dockerfile: docker/prod/servers/voter-http/Dockerfile
+      dockerfile: docker/prod/servers/voter/Dockerfile
     env_file:
       - ../../servers/.env
     depends_on:
