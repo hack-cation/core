@@ -1,0 +1,39 @@
+name: Deploy to Production Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.SERVER_ENV }}" > ./servers/.env
+        shell: bash
+
+      - name: Setup SSH Key and Rsync
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
+      - name: Rsync files to server
+        run: |
+          HOSTNAME=$(echo "${{ secrets.SERVER_SSH_IP }}" | cut -d'@' -f2)
+          ssh-keyscan -H $HOSTNAME >> ~/.ssh/known_hosts
+
+          rsync -avz --exclude 'node_modules/' ./ ${{ secrets.SERVER_SSH_IP }}:/web/core
+
+      - name: Deploy with Docker Compose
+        run: |
+          ssh ${{ secrets.SERVER_SSH_IP }} << 'EOF'
+            cd /web/core/docker/prod
+          
+            docker compose up --build -d
+          EOF
