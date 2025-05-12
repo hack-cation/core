@@ -6,6 +6,6 @@ func (app *application) addRoutes(mux *http.ServeMux) {
 
 	mux.Handle("GET /campaigns", app.voteHandler.GetCampaigns())
 	mux.Handle("GET /campaigns/{id}/projects", app.voteHandler.GetProjectsForCampaign())
-	mux.Handle("POST /projects/votes", app.voteHandler.InsertVotes())
+	mux.Handle("POST /campaigns/{id}/votes", app.voteHandler.InsertVotes())
 
 }

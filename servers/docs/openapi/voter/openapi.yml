@@ -1,0 +1,296 @@
+openapi: 3.0.0
+info:
+  title: .hack//cation Voter API
+  version: v1.0.0
+  description: API for managing campaigns, projects, and votes for .hack//cation events.
+servers:
+  - url: http://localhost:8080/v1
+    description: Local development server
+  - url: http://voter-server:8080/v1
+    description: Docker container internal URL
+  - url: https://api.hackcation.dev/v1
+    description: Production server
+
+paths:
+  /campaigns:
+    get:
+      summary: Get all campaigns
+      operationId: getCampaigns
+      tags:
+        - Public Voter Operations
+      responses:
+        '200':
+          description: A list of campaigns.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  campaigns:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Campaign'
+              examples:
+                default:
+                  value:
+                    campaigns:
+                      - id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+                        name: "Spring Hackathon 2025"
+                        maxVotes: 5
+                        eventDate: "2025-05-10T10:00:00Z"
+                        isActive: true
+                        createdAt: "2025-03-01T12:00:00Z"
+                        updatedAt: "2025-03-01T12:00:00Z"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '504':
+          $ref: '#/components/responses/RequestTimeout'
+
+  /campaigns/{campaignId}/projects:
+    get:
+      summary: Get projects for a specific campaign
+      operationId: getProjectsForCampaign
+      tags:
+        - Public Voter Operations
+      parameters:
+        - name: campaignId
+          in: path
+          required: true
+          description: The ID of the campaign to retrieve projects for.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: A list of projects for the specified campaign.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projects:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityValidation'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '504':
+          $ref: '#/components/responses/RequestTimeout'
+
+  /campaigns/{campaignId}/votes:
+    post:
+      summary: Insert votes for projects
+      operationId: insertVotes
+      tags:
+        - Public Voter Operations
+      parameters:
+        - name: campaignId
+          in: path
+          required: true
+          description: The ID of the campaign you are inserting votes for.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Project IDs to vote for.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsertVotesDto'
+      responses:
+        '204':
+          description: Votes successfully recorded. No content.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityGeneric'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '504':
+          $ref: '#/components/responses/RequestTimeout'
+
+components:
+  schemas:
+    Campaign:
+      type: object
+      properties:
+        id: { type: string, format: uuid, description: Unique identifier for the campaign., readOnly: true }
+        name: { type: string, description: Name of the campaign. }
+        maxVotes: { type: integer, description: Maximum number of votes allowed per voter for this campaign. }
+        eventDate: { type: string, format: date-time, description: Date and time of the event. }
+        isActive: { type: boolean, description: Indicates if the campaign is currently active for voting. }
+        createdAt: { type: string, format: date-time, description: Timestamp of when the campaign was created., readOnly: true }
+        updatedAt: { type: string, format: date-time, description: Timestamp of when the campaign was last updated., readOnly: true }
+      required: [id, name, maxVotes, eventDate, isActive, createdAt, updatedAt]
+
+    Project:
+      type: object
+      properties:
+        id: { type: string, format: uuid, description: Unique identifier for the project., readOnly: true }
+        campaignId: { type: string, format: uuid, description: Identifier of the campaign this project belongs to. }
+        author: { type: string, description: Author or team name for the project. }
+        votes: { type: integer, description: Current number of votes the project has received., readOnly: true }
+        gitUrl: { type: string, format: url, description: URL to the project's git repository. }
+        createdAt: { type: string, format: date-time, description: Timestamp of when the project was created., readOnly: true }
+        updatedAt: { type: string, format: date-time, description: Timestamp of when the project was last updated., readOnly: true }
+      required: [id, campaignId, author, votes, gitUrl, createdAt, updatedAt]
+
+    InsertVotesDto:
+      type: object
+      properties:
+        projectIds:
+          type: array
+          items: { type: string, format: uuid }
+          description: A list of project IDs to cast votes for.
+      required: [projectIds]
+
+    ValidationErrors:
+      type: object
+      additionalProperties:
+        type: string
+      description: A map of validation errors, where the key is the field name and the value is the error message.
+      example:
+        field1: "error message for field1"
+        field2: "another error for field2"
+
+    ErrorContent:
+      oneOf:
+        - type: string
+          description: A simple error message.
+          example: "A generic error occurred."
+        - $ref: '#/components/schemas/ValidationErrors'
+
+    ApiError:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorContent'
+      required:
+        - error
+
+  responses:
+    InternalServerError: # 500
+      description: The server encountered a problem and could not process your request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            default:
+              value:
+                error: "the server encountered a problem and could not process your request"
+    MethodNotAllowed: # 405
+      description: The method is not supported for this resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            default:
+              value:
+                error: "the GET method is not supported for this resource"
+    NotFound: # 404
+      description: The requested resource could not be found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            default:
+              value:
+                error: "the requested resource could not be found"
+    BadRequest: # 400
+      description: The request was malformed or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            stringError:
+              summary: Simple error string
+              value:
+                error: "invalid input syntax for type uuid"
+            validationError:
+              summary: Validation error map (if applicable for a 400)
+              value:
+                error:
+                  email: "must be a valid email address"
+                  password: "must be at least 8 characters"
+    UnprocessableEntityValidation: # 422 specifically for validation errors
+      description: The request was well-formed but failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            default:
+              value:
+                error:
+                  fieldName1: "validation message for fieldName1"
+                  fieldName2: "another validation message"
+    UnprocessableEntityGeneric: # 422
+      description: The request was well-formed but was unable to be followed due to semantic errors.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            default:
+              value:
+                error: "votes are for multiple campaigns"
+    Conflict: # 409
+      description: A conflict occurred, such as an edit conflict or unique constraint violation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            editConflict:
+              summary: Edit Conflict
+              value:
+                error: "unable to update record due to an edit conflict, please try again"
+            uniqueViolation:
+              summary: Unique Violation
+              value:
+                error: "the resource you're trying to create already exists: email"
+    Unauthorized: # 401
+      description: Authentication is required and has failed or has not yet been provided.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            default:
+              value:
+                error: "you must be authenticated to access this resource"
+    Forbidden: # 403
+      description: The server understood the request, but is refusing to fulfill it.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            default:
+              value:
+                error: "you are not authorized to access this resource"
+    RequestTimeout: # 504
+      description: The server timed out waiting for the request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            default:
+              value:
+                error: "the request timed out"
+
+tags:
+  - name: Public Voter Operations
+    description: Public endpoints related to voting and campaigns.

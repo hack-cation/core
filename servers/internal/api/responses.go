@@ -112,5 +112,5 @@ func ForbiddenResponse(w http.ResponseWriter, r *http.Request, logger *slog.Logg
 
 func TimeoutResponse(w http.ResponseWriter, r *http.Request, logger *slog.Logger) {
 	message := "the request timed out"
-	ErrorResponse(w, r, logger, http.StatusRequestTimeout, message)
+	ErrorResponse(w, r, logger, http.StatusGatewayTimeout, message)
 }
