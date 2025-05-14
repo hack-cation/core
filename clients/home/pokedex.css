@@ -1,0 +1,142 @@
+/* Importing Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
+
+/* ============================================================================ */
+/* CSS Variables for Light and Dark Modes */
+/* ============================================================================ */
+
+:root {
+  --bg-light: #f8f5f9;
+  --bg-dark: #2c2c2c;
+  --text-light: #333;
+  --text-dark: #f8f5f9;
+  --accent-light: #cf2835;
+  --accent-dark: #a6131e;
+  --card-bg-light: #fff;
+  --card-bg-dark: #3a3a3a;
+  --card-shadow-light: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --card-shadow-dark: 0 4px 8px rgba(0, 0, 0, 0.5);
+  --transition-speed: 0.3s ease;
+}
+
+/* Default to Dark Mode */
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+  font-family: 'VT323', monospace;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+/* Light Mode */
+body.light {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+}
+
+/* ============================================================================ */
+/* Dark/Light Mode Toggle Switch */
+/* ============================================================================ */
+
+.mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.mode-toggle input {
+  display: none;
+}
+
+.mode-toggle label {
+  width: 60px;
+  height: 30px;
+  background-color: var(--accent-light);
+  border-radius: 50px;
+  position: relative;
+  transition: background-color var(--transition-speed);
+}
+
+.mode-toggle label::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 22px;
+  height: 22px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform var(--transition-speed);
+}
+
+body.light .mode-toggle label {
+  background-color: var(--accent-dark);
+}
+
+body.light .mode-toggle label::before {
+  transform: translateX(30px);
+}
+
+/* ============================================================================ */
+/* Pokémon Search and Card Styling */
+/* ============================================================================ */
+
+.searchPokemon input {
+  background: transparent;
+  border: none;
+  padding: 16px;
+  border-bottom: solid 2px var(--accent-light);
+  font-size: 16px;
+  color: var(--text-light);
+  width: 100%;
+  transition: all var(--transition-speed);
+}
+
+.searchPokemon input::placeholder {
+  color: var(--accent-dark);
+}
+
+.pokemons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.pokemon {
+  background: var(--card-bg-light);
+  border: 1px solid #e1e1e1;
+  width: 30%;
+  height: 168px;
+  padding: 20px;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+body.light .pokemon {
+  background: var(--card-bg-dark);
+  border-color: #555;
+}
+
+.pokemon:hover {
+  transform: scale(1.05);
+  box-shadow: var(--card-shadow-light);
+}
+
+body.light .pokemon:hover {
+  box-shadow: var(--card-shadow-dark);
+}
+
+.pokemon img {
+  width: 150px;
+  height: 150px;
+}

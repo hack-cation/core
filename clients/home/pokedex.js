@@ -1,108 +1,190 @@
-// Create an empty array to store the custom team names entered by the user
-let customTeamNames = [];
+/* 
+  This JavaScript file adds interactivity to the Pokédex Team Builder app.
+  It allows users to create, name, edit, delete, and select Pokémon teams,
+  and includes a theme toggle to switch between dark (default) and bright light mode.
+*/
 
-// Get references to HTML elements using their unique IDs
-let namingForm = document.getElementById('teamOptionsForNamingMenu'); // The form where the user enters their team name
-let namingInput = document.getElementById('team1ForNamingForm'); // The input field where the user types the team name
-let dropdown = document.getElementById('teamSelect'); // The dropdown menu where team names will appear
-let checkboxContainer = document.querySelector('.teamOptionsFromCheckboxesMenu'); // The container for the checkboxes that will list teams
+/* ============================================================================
+   GLOBAL DATA: Team Storage
+   ============================================================================ */
 
-// Add an event listener to the form to listen for a "submit" event (when the user submits the form)
-namingForm.addEventListener('submit', function (event) {
-  event.preventDefault(); // Prevents the form from refreshing the page when the user submits it
+// This array stores custom team names added by the user.
+// We start with an empty list and dynamically add to it.
+let teamNames = ["Team Mystic","Team Valor","Team Rocket"];
 
-  // Retrieve the value the user has entered in the naming input field
-  let teamName = namingInput.value.trim(); // Trim spaces from the beginning and end of the name
+/* ============================================================================
+   SELECT HTML ELEMENTS FOR INTERACTION
+   ============================================================================ */
 
-  // Check if the user entered a non-empty team name and if that name is not already in the customTeamNames array
-  if (teamName && !customTeamNames.includes(teamName)) {
-    customTeamNames.push(teamName); // Add the new team name to the array
-    updateDropdown(); // Update the dropdown menu with the new team name
-    updateCheckboxes(); // Update the checkboxes with the new team name
-    namingInput.value = ''; // Clear the input field after adding the team name
+// These variables grab specific elements from the HTML page to interact with:
+// - The form used to add new team names
+// - The input field where names are typed
+// - The dropdown menu for selecting teams
+// - The area where team checkboxes are displayed
+
+const namingForm = document.getElementById('teamOptionsForNamingMenu');
+const namingInput = document.getElementById('team1ForNamingForm');
+const dropdown = document.getElementById('teamSelect');
+const checkboxContainer = document.querySelector('#teamOptionsForCheckboxesMenu fieldset');
+
+/* ============================================================================
+   TEAM NAME SUBMISSION: Add New Team
+   ============================================================================ */
+
+// This listens for the form submission event, when a user adds a new team.
+namingForm.addEventListener('submit', function(event) {
+  event.preventDefault(); // Stop the page from reloading
+
+  // Read the input, trim whitespace, and check it's not already added
+  let teamName = namingInput.value.trim();
+  if (teamName && !teamNames.includes(teamName)) {
+    teamNames.push(teamName); // Add new team name to memory
+    updateDropdown();               // Refresh dropdown options
+    updateCheckboxes();             // Refresh checkbox list
+    namingInput.value = '';         // Clear the input box
   }
 });
 
-// Function to update the dropdown menu with all the custom team names
+/* ============================================================================
+   UPDATE DROPDOWN: Refresh with Static + Custom Teams
+   ============================================================================ */
+
 function updateDropdown() {
-  // Clear all the options in the dropdown, leaving just the placeholder option
+  // Static/default team options that are always shown
+
+
+  // Add static options first
   dropdown.innerHTML = '<option value="">--Select a team--</option>';
 
-  // Loop through each custom team name and create a new option element for it
-  customTeamNames.forEach(function (team) {
-    let option = document.createElement('option'); // Create a new <option> element
-    option.value = team; // Set the value of the option to the team name
-    option.textContent = team; // Set the display text of the option to the team name
-    dropdown.appendChild(option); // Add the option to the dropdown menu
+  // Then add each custom team name as a new <option>
+  teamNames.forEach(function(team) {
+    let option = document.createElement('option');
+    option.value = team;
+    option.textContent = team;
+    dropdown.appendChild(option);
   });
 }
 
-// Function to update the checkboxes with all the custom team names
+/* ============================================================================
+   UPDATE CHECKBOXES: Show Custom Teams with Edit + Save
+   ============================================================================ */
+
 function updateCheckboxes() {
-  // Select all the checkbox input elements, labels, and line breaks within the checkbox container
-  let checkboxes = checkboxContainer.querySelectorAll('input[type="checkbox"], label, br');
+  // Clear any existing custom team elements
+     checkboxContainer.innerHTML = "";
 
-  // Loop through each of the checkbox elements and remove them from the container
-  checkboxes.forEach(function (el) {
-    el.remove(); // Remove each element from the container
-  });
+  // For each custom team, create a set of UI components
+  teamNames.forEach(function(team, index) {
+    let wrapper = document.createElement('div');
+    wrapper.className = 'custom-team';
 
-  // Loop through each custom team name to create a new checkbox and label for it
-  customTeamNames.forEach(function (team, index) {
-    let checkbox = document.createElement('input'); // Create a new <input> element for the checkbox
-    checkbox.type = 'checkbox'; // Set the input type to checkbox
-    checkbox.id = `teamCheckbox${index}`; // Set a unique ID for each checkbox
-    checkbox.name = 'teams'; // Give the checkboxes the same name, so they can be grouped together
-    checkbox.value = team; // Set the value of the checkbox to the team name
+    // Create a unique Pokémon icon
+    //let icon = document.createElement('img');
+    //icon.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${(index % 151) + 1}.png`;
+    //icon.classList.add('poke-icon');
 
-    let label = document.createElement('label'); // Create a new <label> element
-    label.htmlFor = checkbox.id; // Set the label's "for" attribute to the checkbox's ID (links them)
-    label.textContent = team; // Set the label text to the team name
+    // Create a checkbox for team selection
+    let checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = `teamCheckbox${index}`;
+    checkbox.name = 'teams';
+    checkbox.value = team;
 
-    // Append the checkbox, label, and a line break to the checkbox container
-    checkboxContainer.appendChild(checkbox);
-    checkboxContainer.appendChild(label);
-    checkboxContainer.appendChild(document.createElement('br'));
+    let label = document.createElement("label");
+    label.for = checkbox.id;
+    label.innerText = team;
+
+    // Append all parts into the wrapper container
+    wrapper.appendChild(checkbox);
+    wrapper.appendChild(label);
+
+    // Add wrapper to the page
+    checkboxContainer.appendChild(wrapper);
   });
 }
 
-// Add event listener to the "Reset" button for the dropdown menu
-let resetDropdownButton = document.getElementById('resetTeamOptionsFormDropdownButtonMenu');
-resetDropdownButton.addEventListener('click', function (event) {
-  event.target.form.reset(); // Reset the dropdown form (clears the selected value)
+/* ============================================================================
+   RESET BUTTONS: Dropdown and Checkbox Forms
+   ============================================================================ */
+
+// Reset dropdown back to its default state
+let dropdownResetButton = document.getElementById('resetTeamOptionsFormDropdownButtonMenu');
+dropdownResetButton.addEventListener('click', function(event) {
+  event.target.form.reset();
 });
 
-// Add event listener to the "Reset" button for the checkboxes menu
-let resetCheckboxesButton = document.getElementById('resetTeamOptionsFormCheckboxesButtonMenu');
-resetCheckboxesButton.addEventListener('click', function (event) {
-  event.target.form.reset(); // Reset the checkboxes form (unchecks all checkboxes)
+// Uncheck all boxes in the checkbox form
+let checkboxResetButton = document.getElementById('resetTeamOptionsFormCheckboxesButtonMenu');
+checkboxResetButton.addEventListener('click', function(event) {
+  event.target.form.reset();
 });
 
-// Optional: Prevent actual form submissions while testing
-let forms = document.querySelectorAll('form'); // Select all form elements on the page
-forms.forEach(function (form) {
-  form.addEventListener('submit', function (event) {
-    event.preventDefault(); // Prevent the form from submitting and causing a page reload
-    alert("Form submitted (test mode)."); // Display an alert to simulate a successful form submission
-  });
+/* ============================================================================
+   DELETE ALL TEAMS: Clear Custom Teams
+   ============================================================================ */
+
+let deleteButton = document.createElement('button');
+deleteButton.textContent = 'Delete All Teams';
+deleteButton.className = 'delete-button';
+
+deleteButton.addEventListener('click', function() {
+ // teamNames = [];   // Clear all team names
+  updateDropdown();       // Refresh the dropdown
+  updateCheckboxes();     // Refresh the checkbox list
 });
 
-// Function to save the custom team names to localStorage so they persist even after page reload
-function saveTeams() {
-  localStorage.setItem('teams', JSON.stringify(customTeamNames)); // Save the custom team names array to localStorage
+// Add delete button to the form for visibility
+namingForm.appendChild(deleteButton);
+
+/* ============================================================================
+   THEME TOGGLE: Dark (Default) / Light Switch
+   ============================================================================ */
+
+// Grab the checkbox used to toggle themes
+let themeToggle = document.getElementById('theme-toggle');
+
+// Get the <body> tag so we can add/remove classes
+let body = document.body;
+
+// Check if a theme was previously saved in browser storage
+let savedTheme = localStorage.getItem('theme');
+
+if (savedTheme) {
+  // If there was a saved theme, apply it
+  body.classList.add(savedTheme);
+  themeToggle.checked = savedTheme === 'light';
+} else {
+  // Default to dark mode
+  body.classList.add('dark');
+  themeToggle.checked = false;
 }
 
-// Function to load the saved team names from localStorage and display them
-function loadTeams() {
-  let savedTeams = localStorage.getItem('teams'); // Retrieve the saved teams from localStorage
-  if (savedTeams) {
-    customTeamNames = JSON.parse(savedTeams); // Parse the JSON string back into an array
-    updateDropdown(); // Update the dropdown with the saved team names
-    updateCheckboxes(); // Update the checkboxes with the saved team names
+// When the user toggles the theme switch:
+themeToggle.addEventListener('change', () => {
+  if (themeToggle.checked) {
+    // Switch to bright light mode
+    body.classList.replace('dark', 'light');
+    localStorage.setItem('theme', 'light');
+  } else {
+    // Switch back to dark mode
+    body.classList.replace('light', 'dark');
+    localStorage.setItem('theme', 'dark');
   }
-}
-
-// Load saved teams on page load
-window.addEventListener('load', function () {
-  loadTeams(); // Call the loadTeams function to populate the page with saved team names
 });
+
+/* ============================================================================
+   FORM SUBMISSION CATCH: Prevent Accidental Reloads
+   ============================================================================ */
+
+// Prevent any form from submitting to a server or reloading the page
+let allForms = document.querySelectorAll('form');
+allForms.forEach(function(form) {
+  form.addEventListener('submit', function(event) {
+    event.preventDefault(); // Stops form from reloading page
+    alert("Form submitted (test mode).");
+  });
+});
+
+/* ============================================================================
+   END OF FILE
+   ============================================================================ */

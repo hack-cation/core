@@ -1,34 +1,77 @@
+<!--
+  This is the HTML file for the Pokédex application.
+  It structures the content and links to external CSS and JavaScript files.
+-->
 <!DOCTYPE html>
+<!-- Declares that this document is an HTML5 document. -->
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Pokémon Team Selector</title>
+<!-- The root element of the HTML document, with language set to English. -->
 
-    <!-- External CSS (for modularity) -->
+
+
+<head>
+    <!-- The head section contains meta-information about the document. -->
+    <meta charset="UTF-8">
+
+    <!-- Specifies the character encoding for the document (UTF-8 supports all characters). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Ensures proper scaling on different devices, especially mobile. -->
+    <title>Pokédex</title>
+
+    <!-- Sets the title of the webpage, displayed in the browser tab. -->
     <link rel="stylesheet" href="pokedex.css">
 
-    <!-- External JavaScript (for modularity) -->
+    <!-- Links to the external CSS file for styling the webpage. -->
     <script defer src="pokedex.js"></script>
 
-</head>
+    <!-- Links to the external JavaScript file for adding interactivity, with defer to load after HTML. -->
+
+  </head>
 
 <body>
 
-  <!-- Main container for the team selector interface -->
-  <div class="pokedex">
+    <!-- The body section contains the content of the webpage. -->
+    <!-- Main header section, displays the title of the webpage. -->
+  <header>
+    <!-- Main heading of the webpage, visible at the top of the page. -->
     <h2>Pokémon Team Selector Page</h2>
 
-    <!-- Optional team naming form -->
-    <form id="teamOptionsForNamingMenu" method="post" action="/">
-      <div class="teamOptionsFromNamingForm">
-        <!-- Input field for naming a team -->
-        <label for="team1ForNamingForm">Enter team 1 name:</label>
-        <input type="text" id="team1ForNamingForm" name="team1name" placeholder="Team 1 Name">
-      </div>
-    </form>
-  
+  </header>
+
+  <!-- Dark/Light mode toggle section. -->
+  <div class="mode-toggle">
+    <input type="checkbox" id="theme-toggle">
+    <!-- A checkbox that users can check/uncheck to toggle between dark and light modes. -->
+    <label for="theme-toggle"></label>
+    <!-- Label used to visually represent the checkbox, styled as a toggle switch. -->
+  </div>
+
+  <label for="theme-toggle">Dark Mode</label>
+  <input type="checkbox" id="theme-toggle">
+
+  <div id="pokemon-container">
+    <!-- Dynamically generated Pokémon cards will appear here -->
+  </div>
+
+  <div class="team-management">
+    <h2>Manage Your Custom Teams</h2>
+
+
+        <!--team naming form -->
+        <form id="teamOptionsForNamingMenu" method="post" action="/">
+            <div class="teamOptionsFromNamingForm">
+              <!-- Input field for naming a team -->
+              <label for="team1ForNamingForm">Enter team 1 name:</label>
+              <input type="text" id="team1ForNamingForm" name="team1name" placeholder="Enter custom team name">
+            </div>
+          </form>
+
+
     <!-- Visual spacing (can be styled or removed) -->
     <br><p></p><br>
+
+
 
     <!-- Form with a dropdown to select one team -->
     <form id="teamOptionsForDropdownMenu" method="post" action="/">
@@ -60,6 +103,7 @@
     </form>
 
 
+
     <!-- Visual spacing (can be styled or removed) -->
     <br><p></p><br>
 
@@ -67,7 +111,7 @@
     <form id="teamOptionsForCheckboxesMenu" method="post" action="/">
       <div class="teamOptionsFromCheckboxesMenu">
         <p>Select your favorite Pokémon teams:</p>
-    
+        <fieldset>
         <!-- Checkbox options for Pokémon teams -->
         <input type="checkbox" id="team1FromCheckboxesMenu" name="teams" value="teamMystic">
         <label for="team1FromCheckboxesMenu">Team Mystic</label><br>
@@ -83,6 +127,10 @@
     
         <input type="checkbox" id="team5FromCheckboxesMenu" name="teams" value="teamGalactic">
         <label for="team5FromCheckboxesMenu">Team Galactic</label><br>
+
+        </fieldset>
+    
+
     
         <!-- Submit button -->
         <button type="submit">click here to submit</button>
@@ -101,9 +149,18 @@
     <br><p></p><br>
 
 
+
+    <p></p>
+
+    <button type="button" id="resetTeamOptionsFormDropdownButtonMenu">Reset Dropdown</button>
+    <button type="button" id="resetTeamOptionsFormCheckboxesButtonMenu">Reset Checkboxes</button>
+
   </div>
+
 
 
 </body>
 </html>
+
+
 
