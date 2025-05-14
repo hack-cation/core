@@ -1,168 +1,104 @@
-/* 
-  Importing Google Fonts:
-  This line loads custom fonts from Google's font library.
-  'VT323' and 'Press Start 2P' are retro-style pixel fonts
-  that help create a nostalgic game-like feel for the UI.
-*/
+/* Importing Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
 
-/* 
-  Universal Box Sizing Reset:
-  Ensures all elements and their pseudo-elements calculate width and height
-  using 'border-box', which includes padding and border in the size.
-  This simplifies layout calculations and prevents layout bugs.
-*/
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+/* ============================================================================ */
+/* CSS Variables for Light and Dark Modes */
+/* ============================================================================ */
+
+:root {
+  --bg-light: #f8f5f9;
+  --bg-dark: #2c2c2c;
+  --text-light: #333;
+  --text-dark: #f8f5f9;
+  --accent-light: #cf2835;
+  --accent-dark: #a6131e;
+  --card-bg-light: #fff;
+  --card-bg-dark: #3a3a3a;
+  --card-shadow-light: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --card-shadow-dark: 0 4px 8px rgba(0, 0, 0, 0.5);
+  --transition-speed: 0.3s ease;
 }
 
-/* 
-  Body Styling:
-  Sets up the main page’s appearance and layout behavior.
-  - Removes default margin/padding from the body.
-  - Applies a retro font for all text.
-  - Sets a light background color for contrast.
-  - Uses Flexbox to center all content vertically and horizontally.
-  - Sets full height for the page.
-  - Prevents horizontal scrolling.
-*/
+/* Default to Dark Mode */
 body {
-  margin: 0;
-  padding: 0;
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
   font-family: 'VT323', monospace;
-  background: #f8f5f9;
-  color: #333;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  overflow-x: hidden;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
 }
 
-/* 
-  Header Styling:
-  Applies background color and centers logo or heading content.
-  - Full width to stretch across the page.
-  - Bold red theme for Pokémon branding.
-  - Aligns and centers logo or text in the middle.
-*/
-header {
-  width: 100%;
-  background: #cf2835;
-  height: 200px;
+/* Light Mode */
+body.light {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+}
+
+/* ============================================================================ */
+/* Dark/Light Mode Toggle Switch */
+/* ============================================================================ */
+
+.mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.mode-toggle input {
+  display: none;
+}
+
+.mode-toggle label {
+  width: 60px;
+  height: 30px;
+  background-color: var(--accent-light);
+  border-radius: 50px;
   position: relative;
+  transition: background-color var(--transition-speed);
 }
 
-/* 
-  Logo inside header:
-  Resizes the Pokémon logo inside the header to fit nicely.
-*/
-header .logo img {
-  width: 200px;
+.mode-toggle label::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 22px;
+  height: 22px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform var(--transition-speed);
 }
 
-/* 
-  Search Bar Container Styling:
-  Centers the search input on the page with spacing around it.
-*/
-.searchPokemon {
-  width: 600px;
-  text-align: center;
-  margin: 15px auto;
+body.light .mode-toggle label {
+  background-color: var(--accent-dark);
 }
 
-/* 
-  Input Styling:
-  Makes the search input box clean and stylish.
-  - Transparent background so it blends into the background.
-  - Underlined with a solid line (instead of a full box).
-  - Larger font and bold text for visibility.
-  - Smooth transition for animation when focused.
-*/
+body.light .mode-toggle label::before {
+  transform: translateX(30px);
+}
+
+/* ============================================================================ */
+/* Pokémon Search and Card Styling */
+/* ============================================================================ */
+
 .searchPokemon input {
   background: transparent;
   border: none;
   padding: 16px;
-  border-bottom: solid 2px #a6131e;
+  border-bottom: solid 2px var(--accent-light);
   font-size: 16px;
-  color: #fff;
-  width: 60%;
-  transition: all 1s ease;
-  font-weight: bold;
+  color: var(--text-light);
+  width: 100%;
+  transition: all var(--transition-speed);
 }
 
-/* 
-  Placeholder Text Styling:
-  Changes placeholder text color for contrast and theme matching.
-*/
 .searchPokemon input::placeholder {
-  color: #800009;
-  font-weight: bold;
+  color: var(--accent-dark);
 }
 
-/* 
-  Input Focus Styling:
-  When the user clicks into the input, the underline becomes white.
-*/
-.searchPokemon input:focus {
-  outline: none;
-  border-color: #fff;
-}
-
-/* 
-  Search Button Styling:
-  Applies styles to the search button.
-  - Rounded white background with a colored border.
-  - Adds a subtle shadow and click animation.
-*/
-button.button-search {
-  background: #fff;
-  border: 2px solid #a6131e;
-  box-shadow: 0 0 0 3px #fff;
-  cursor: pointer;
-  width: 130px;
-  border-radius: 21px;
-  padding: 4px;
-  color: #a6131e;
-  font-weight: bold;
-  transition: 0.6s;
-}
-
-/* 
-  Inside the search button (icon image) should be small and centered.
-*/
-button.button-search img {
-  width: 20px;
-  height: 20px;
-  margin: 0;
-}
-
-/* 
-  Removes default focus outline for the button.
-*/
-button.button-search:focus {
-  outline: none;
-}
-
-/* 
-  Slightly enlarges the button when clicked for user feedback.
-*/
-button.button-search:active {
-  transform: scale(1.1);
-}
-
-/* 
-  Pokémon Cards Container:
-  Layout for showing Pokémon or team cards.
-  - Wraps cards on new lines.
-  - Adds space between cards.
-*/
 .pokemons {
   display: flex;
   justify-content: center;
@@ -172,14 +108,8 @@ button.button-search:active {
   margin-top: 20px;
 }
 
-/* 
-  Individual Pokémon Card:
-  Creates a box for each Pokémon/team.
-  - Adds padding and a shadow.
-  - Adds hover animation and makes it clickable.
-*/
 .pokemon {
-  background: #fff;
+  background: var(--card-bg-light);
   border: 1px solid #e1e1e1;
   width: 30%;
   height: 168px;
@@ -189,165 +119,24 @@ button.button-search:active {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
 }
 
-/* 
-  Hover Effect on Pokémon Cards:
-  Enlarges and adds shadow when hovered.
-*/
+body.light .pokemon {
+  background: var(--card-bg-dark);
+  border-color: #555;
+}
+
 .pokemon:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--card-shadow-light);
 }
 
-/* 
-  Pokémon Images:
-  Sets a fixed size for Pokémon images inside cards.
-*/
+body.light .pokemon:hover {
+  box-shadow: var(--card-shadow-dark);
+}
+
 .pokemon img {
   width: 150px;
   height: 150px;
-}
-
-/* 
-  Pokémon Details Text Block:
-  Margin around text inside the card.
-*/
-.pokemon-details {
-  margin-left: 10px;
-  width: 100%;
-}
-
-/* 
-  Species Text Section:
-  Displays Pokémon species info in a horizontal layout.
-*/
-.species {
-  display: flex;
-  justify-content: space-around;
-  font-size: 1.4em;
-  color: #e2e2e2;
-}
-
-/* 
-  Species Title Styling:
-  Makes the label for species look subtle.
-*/
-.species-title {
-  color: #8a8a8a;
-}
-
-/* 
-  Active Selection:
-  Changes color of selected/active species.
-*/
-.actived {
-  color: #a6131e;
-}
-
-/* 
-  General Reset for Titles and Paragraphs:
-  Removes default margin/padding for cleaner layout.
-*/
-.name-pokemon,
-p,
-h1,
-h2 {
-  margin: 0;
-  padding: 0;
-}
-
-/* 
-  Pokémon Icon Styling:
-  These icons appear next to team names in dropdowns or lists.
-  - Set size and space between icon and text.
-  - Add hover animation effects.
-*/
-.poke-icon {
-  width: 32px;
-  height: 32px;
-  vertical-align: middle;
-  margin-right: 10px;
-  transition: transform 0.3s ease, filter 0.3s ease;
-}
-
-/* 
-  Sparkling Hover Animation on Icons:
-  - Icons grow and glow slightly when hovered over.
-  - Creates a fun and dynamic user experience.
-*/
-.poke-icon:hover {
-  transform: scale(1.2);
-  filter: drop-shadow(0 0 8px #ffab76) brightness(1.5);
-}
-
-/* 
-  Editable Input Fields:
-  These fields allow users to edit team names.
-  - Use retro font.
-  - Highlight with dashed border.
-  - Fit into dark themes with contrasting text.
-*/
-.editable-input {
-  font-family: 'Press Start 2P', system-ui;
-  background-color: #2c2c2c;
-  color: #fff;
-  border: 1px dashed #ffab76;
-  padding: 6px;
-  margin-right: 10px;
-  font-size: 0.7em;
-  border-radius: 4px;
-  width: 50%;
-}
-
-/* 
-  Save Button for Editable Input:
-  - Green button styled for confirmation actions.
-  - Styled to match the theme and keep buttons small.
-*/
-.save-button {
-  font-family: 'Press Start 2P', system-ui;
-  background-color: #4caf50;
-  color: #fff;
-  font-size: 0.6em;
-  border: none;
-  padding: 6px 12px;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-left: 5px;
-}
-
-/* 
-  Hover Effect for Save Button:
-  Lightens the green on hover for visual feedback.
-*/
-.save-button:hover {
-  background-color: #66bb6a;
-}
-
-/* 
-  Delete All Teams Button:
-  - Bold red for danger or delete action.
-  - Slightly larger for emphasis.
-  - Rounded corners and spacing.
-*/
-.delete-button {
-  font-family: 'Press Start 2P', system-ui;
-  background-color: #d32f2f;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  margin: 10px 0;
-  cursor: pointer;
-  font-size: 0.75em;
-}
-
-/* 
-  Hover Effect for Delete Button:
-  Slightly different red to show the button is interactive.
-*/
-.delete-button:hover {
-  background-color: #e53935;
 }
