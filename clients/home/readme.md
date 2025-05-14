@@ -15,7 +15,10 @@ git checkout -b BRANCH_NAME
 git branch
 git checkout BRANCH_NAME
 git push -u origin BRANCH_NAME
-
+git merge BRANCH_NAME
+git push -d origin BRANCH_NAME
+git branch
+git branch -D BRANCH_NAME
 ```
 
 
