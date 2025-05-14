@@ -10,7 +10,7 @@
 
 // This array stores custom team names added by the user.
 // We start with an empty list and dynamically add to it.
-let customTeamNames = [];
+let teamNames = ["Team Mystic","Team Valor","Team Rocket"];
 
 /* ============================================================================
    SELECT HTML ELEMENTS FOR INTERACTION
@@ -22,10 +22,10 @@ let customTeamNames = [];
 // - The dropdown menu for selecting teams
 // - The area where team checkboxes are displayed
 
-let namingForm = document.getElementById('teamOptionsForNamingMenu');
-let namingInput = document.getElementById('team1ForNamingForm');
-let dropdown = document.getElementById('teamSelect');
-let checkboxContainer = document.querySelector('.teamOptionsFromCheckboxesMenu');
+const namingForm = document.getElementById('teamOptionsForNamingMenu');
+const namingInput = document.getElementById('team1ForNamingForm');
+const dropdown = document.getElementById('teamSelect');
+const checkboxContainer = document.querySelector('#teamOptionsForCheckboxesMenu fieldset');
 
 /* ============================================================================
    TEAM NAME SUBMISSION: Add New Team
@@ -37,8 +37,8 @@ namingForm.addEventListener('submit', function(event) {
 
   // Read the input, trim whitespace, and check it's not already added
   let teamName = namingInput.value.trim();
-  if (teamName && !customTeamNames.includes(teamName)) {
-    customTeamNames.push(teamName); // Add new team name to memory
+  if (teamName && !teamNames.includes(teamName)) {
+    teamNames.push(teamName); // Add new team name to memory
     updateDropdown();               // Refresh dropdown options
     updateCheckboxes();             // Refresh checkbox list
     namingInput.value = '';         // Clear the input box
@@ -51,20 +51,13 @@ namingForm.addEventListener('submit', function(event) {
 
 function updateDropdown() {
   // Static/default team options that are always shown
-  let staticTeams = `
-    <option value="">--Select a team--</option>
-    <option value="teamMystic">Team Mystic</option>
-    <option value="teamValor">Team Valor</option>
-    <option value="teamInstinct">Team Instinct</option>
-    <option value="teamRocket">Team Rocket</option>
-    <option value="teamGalactic">Team Galactic</option>
-  `;
+
 
   // Add static options first
-  dropdown.innerHTML = staticTeams;
+  dropdown.innerHTML = '<option value="">--Select a team--</option>';
 
   // Then add each custom team name as a new <option>
-  customTeamNames.forEach(function(team) {
+  teamNames.forEach(function(team) {
     let option = document.createElement('option');
     option.value = team;
     option.textContent = team;
@@ -78,11 +71,10 @@ function updateDropdown() {
 
 function updateCheckboxes() {
   // Clear any existing custom team elements
-  let oldCustomElements = checkboxContainer.querySelectorAll('.custom-team');
-  oldCustomElements.forEach(el => el.remove());
+     checkboxContainer.innerHTML = "";
 
   // For each custom team, create a set of UI components
-  customTeamNames.forEach(function(team, index) {
+  teamNames.forEach(function(team, index) {
     let wrapper = document.createElement('div');
     wrapper.className = 'custom-team';
 
@@ -98,34 +90,13 @@ function updateCheckboxes() {
     checkbox.name = 'teams';
     checkbox.value = team;
 
-    // Create an editable text field to rename the team
-    let editableInput = document.createElement('input');
-    editableInput.type = 'text';
-    editableInput.className = 'editable-input';
-    editableInput.value = team;
-
-    // Create a save button to confirm edits
-    let saveButton = document.createElement('button');
-    saveButton.textContent = 'Save';
-    saveButton.className = 'save-button';
-
-    // When the save button is clicked:
-    saveButton.addEventListener('click', function(event) {
-      event.preventDefault(); // Prevent accidental form submission
-      let newName = editableInput.value.trim();
-      if (newName && !customTeamNames.includes(newName)) {
-        customTeamNames[index] = newName; // Update name in memory
-        updateDropdown();                 // Refresh dropdown and checkboxes
-        updateCheckboxes();
-      }
-    });
+    let label = document.createElement("label");
+    label.for = checkbox.id;
+    label.innerText = team;
 
     // Append all parts into the wrapper container
-    wrapper.appendChild(icon);
     wrapper.appendChild(checkbox);
-    wrapper.appendChild(editableInput);
-    wrapper.appendChild(saveButton);
-    wrapper.appendChild(document.createElement('br'));
+    wrapper.appendChild(label);
 
     // Add wrapper to the page
     checkboxContainer.appendChild(wrapper);
@@ -157,7 +128,7 @@ deleteButton.textContent = 'Delete All Teams';
 deleteButton.className = 'delete-button';
 
 deleteButton.addEventListener('click', function() {
-  customTeamNames = [];   // Clear all team names
+ // teamNames = [];   // Clear all team names
   updateDropdown();       // Refresh the dropdown
   updateCheckboxes();     // Refresh the checkbox list
 });
