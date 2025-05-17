@@ -1,5 +1,6 @@
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 import DvDScreen from './components/dvdscreen/dvdscreen';
+import Logo from './components/logo/logo';
 import './app.css';
 
 export const links = () => [
@@ -24,8 +25,17 @@ export function Layout({ children }) {
         <Links />
       </head>
 
-      <body>
+      <body>  
+        <header>
+          <h1>
+            <a href="/">
+              <Logo />
+            </a>
+          </h1>  
+        </header>
+
         {children}
+
         <ScrollRestoration />
         <Scripts />
       </body>

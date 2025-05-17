@@ -14,4 +14,5 @@ The server documentation (openapi doc) is available at [./docs/openapi/voter/ope
 
 ### Running the Server
 
-Navigate to [/docker/dev](../docker/dev) and run `docker compose up --build -d`
+1. open docker-desktop.
+2. Navigate to [/docker/dev](../docker/dev) and run `docker compose up --build -d`

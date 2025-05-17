@@ -1,5 +1,5 @@
 import React from "react";
-import { uniqueId } from "../api";
+import { uniqueId } from "./uniqueId";
 
 const IdContext = React.createContext(uniqueId());
 

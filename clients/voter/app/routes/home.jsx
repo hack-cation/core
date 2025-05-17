@@ -1,6 +1,7 @@
+import { NavLink } from 'react-router';
 import { Text } from '@phxjs/ui/Text/Text';
-import Logo from '../components/logo/logo';
-import { hasUniqueId } from '../api';
+import { api } from '../api';
+import { hasUniqueId } from '../utils/uniqueId';
 
 export const meta = () => [
   { title: '.hack//voter' },
@@ -8,48 +9,57 @@ export const meta = () => [
 ];
 
 export async function loader() {
-  // fetch polls
+  try {
+    const  {campaigns} = await api.getCampaigns();
 
-  return {
-    polls: [
-      {eventId: 1, eventName: 'Pokedex', eventDate: '2025-05-24'},
-      {eventId: 3, eventName: 'To Be Announced!', eventDate: '2025-10-25'}
-    ]
-  };
+    return {campaigns: campaigns || []};
+  } catch {
+    return {campaigns: []};
+  }
 }
 
 export async function clientLoader({serverLoader}) {
-  const {polls} = await serverLoader();
+  const {campaigns} = await serverLoader();
   const isReturningGuest = hasUniqueId();
-  return {isReturningGuest, polls};
+  return {
+    isReturningGuest,
+    campaigns
+  };
 }
 
-export default function Home({loaderData}) {
-  const {isReturningGuest, polls} = loaderData;
+clientLoader.hydrate = true;
 
+export function HydrateFallback() {
   return (
     <>
-      <h1>
-        <Logo />
-      </h1>
+      <marquee>loading...</marquee>
+    </>
+  )
+}
+
+export default function HomePage({loaderData}) {
+  const {isReturningGuest, campaigns} = loaderData;
+
+  return (
+    <main className="home-page" data-guest={isReturningGuest}>
       {isReturningGuest && 
         <marquee>
           <Text content="Welcome back!" />
         </marquee>
       }
       
-      <h2>Join the Polls</h2>
+      <h2>Join the Campaigns</h2>
 
       <ul>
-        {polls.map(({eventId, eventName, eventDate}) => (
-          <li key={`event_${eventId}`}>
-            <a href={`/vote/${eventId}`}>
-              <span>{eventName}</span>
+        {campaigns.map(({id, name, eventDate}, index) => (
+          <li key={`campaign_${id}_${index}`}>
+            <NavLink to={`/campaign/${id}`}>
+              <span>{name}</span>
               <div>{eventDate}</div>
-            </a>
+            </NavLink>
           </li>
         ))}
       </ul>
-    </>
+    </main>
   );
 }

@@ -3,5 +3,5 @@ import { index, route } from '@react-router/dev/routes';
 export default [ 
   index('./routes/home.jsx'),
   route('dvd', './routes/dvd.jsx'),
-  route('vote/:eventId', './routes/vote.jsx')
+  route('campaign/:campaignId', './routes/campaign.jsx')
 ];
