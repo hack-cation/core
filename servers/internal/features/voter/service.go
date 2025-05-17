@@ -34,37 +34,17 @@ func (s *Service) GetProjectsForCampaign(ctx context.Context, campaignId uuid.UU
 	return s.repo.getProjectsForCampaign(ctx, campaignId)
 }
 
-func (s *Service) InsertVotes(ctx context.Context, projectIds []uuid.UUID) error {
-	projs := make([]*Project, 0)
+func (s *Service) InsertVotes(ctx context.Context, campaignId uuid.UUID, projectIds []uuid.UUID) error {
+	var prevProject *Project = nil
 	for _, projectId := range projectIds {
 		proj, err := s.repo.getProjectById(ctx, projectId)
 		if err != nil {
 			return fmt.Errorf("error retrieving project by id: %w", err)
 		}
-		projs = append(projs, proj)
-	}
-
-	camps := make([]*Campaign, 0)
-	for _, proj := range projs {
-		camp, err := s.repo.getCampaignById(ctx, proj.CampaignId)
-		if err != nil {
-			return err
-		}
-		camps = append(camps, camp)
-	}
-
-	if len(camps) == 0 {
-		return ErrCampaignNotFound
-	}
-
-	prevCampId := camps[0].Id
-	for _, camp := range camps {
-		if camp.Id != prevCampId {
+		if prevProject != nil && prevProject.CampaignId != proj.CampaignId {
 			return ErrVotesAreForMultipleCampaigns
 		}
-		if !camp.IsActive {
-			return ErrCampaignNotLive
-		}
+		prevProject = proj
 	}
 
 	return s.repo.insertVotes(ctx, projectIds)

@@ -14,7 +14,7 @@ type voterService interface {
 	GetCampaigns(ctx context.Context) ([]Campaign, error)
 	GetCampaignById(ctx context.Context, uuid uuid.UUID) (*Campaign, error)
 	GetProjectsForCampaign(ctx context.Context, campaignId uuid.UUID) ([]Project, error)
-	InsertVotes(ctx context.Context, projectIds []uuid.UUID) error
+	InsertVotes(ctx context.Context, campaignId uuid.UUID, projectIds []uuid.UUID) error
 }
 
 type Handler struct {
@@ -58,6 +58,13 @@ func (h *Handler) InsertVotes() http.Handler {
 		ctx, cancel := context.WithTimeout(r.Context(), api.DefaultContextTimeout)
 		defer cancel()
 
+		v := validator.New()
+		campaignId := api.ReadUUIDPath(r, "id", v)
+		if !v.Valid() {
+			api.FailedValidationResponse(w, r, h.logger, v.Errors)
+			return
+		}
+
 		var input InsertVotesDto
 		err := api.ReadJSON(w, r, &input)
 		if err != nil {
@@ -65,7 +72,7 @@ func (h *Handler) InsertVotes() http.Handler {
 			return
 		}
 
-		err = h.service.InsertVotes(ctx, input.ProjectIds)
+		err = h.service.InsertVotes(ctx, campaignId, input.ProjectIds)
 		if err != nil {
 			switch {
 			case errors.Is(err, context.DeadlineExceeded):
