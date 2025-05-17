@@ -1,15 +1,16 @@
 .logo {
+  --dot-size: 0.3em;
   display: inline-block;
   position: relative;
-  padding-left: 13px;
+  padding-left: var(--dot-size);
 }
 .logo svg {
-  width: 13px;
-  height: 13px;
+  width: var(--dot-size);
+  height: var(--dot-size);
   display: inline;
   position: absolute;
   left: 0;
-  bottom: 13px;
+  bottom: 25%;
 }
 .logo span {
   color: inherit;

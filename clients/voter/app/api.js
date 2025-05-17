@@ -66,7 +66,7 @@ if (process.env.NODE_ENV !== 'development'){
 
   
   /** mock getCampaigns */
-  api.getCampaigns = async () => ({campaigns: [activeOne, inactiveOne, inactiveOne]})
+  api.getCampaigns = async () => ({campaigns: [activeOne, inactiveOne, inactiveOne, inactiveOne, inactiveOne, inactiveOne, inactiveOne, inactiveOne, inactiveOne, inactiveOne]})
 
   /** mock getCampaign */
   api.getCampaign = async (campaignId) => ({campaign: fakeOne[campaignId]});

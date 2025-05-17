@@ -1,4 +1,4 @@
-import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
+import { isRouteErrorResponse, Links, Meta, NavLink, Outlet, Scripts, ScrollRestoration } from 'react-router';
 import DvDScreen from './components/dvdscreen/dvdscreen';
 import Logo from './components/logo/logo';
 import './app.css';
@@ -28,9 +28,9 @@ export function Layout({ children }) {
       <body>  
         <header>
           <h1>
-            <a href="/">
+            <NavLink to="/">
               <Logo />
-            </a>
+            </NavLink>
           </h1>  
         </header>
 

@@ -50,12 +50,15 @@ export default function HomePage({loaderData}) {
       
       <h2>Join the Campaigns</h2>
 
-      <ul>
-        {campaigns.map(({id, name, eventDate}, index) => (
+      <ul className="campaigns-list">
+        {campaigns.map(({id, name, eventDate, isActive}, index) => (
           <li key={`campaign_${id}_${index}`}>
-            <NavLink to={`/campaign/${id}`}>
-              <span>{name}</span>
-              <div>{eventDate}</div>
+            <NavLink to={`/campaign/${id}`} className={'campaign-item ' + (isActive && 'campaign-item--active')}>
+              <div>
+                <span className="campaign-item__name">{name}</span>
+                <div className="campaign-item__date">{(new Date(eventDate)).toDateString()}</div>
+              </div>
+              <div className="campaign-item__status">{isActive ? 'VOTE NOW' : 'View Rankings'}</div>
             </NavLink>
           </li>
         ))}
