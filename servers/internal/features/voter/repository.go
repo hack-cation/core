@@ -84,7 +84,7 @@ func (r *PgRepository) getProjectById(ctx context.Context, id uuid.UUID) (*Proje
 	return &res, nil
 }
 
-func (r *PgRepository) getProjectsForCampaign(ctx context.Context, campaignId uuid.UUID) ([]Project, error) {
+func (r *PgRepository) getProjectsForCampaign(ctx context.Context, id uuid.UUID) ([]Project, error) {
 	query := `SELECT 
     				p.id, 
     				p.campaign_id, 
@@ -98,7 +98,7 @@ func (r *PgRepository) getProjectsForCampaign(ctx context.Context, campaignId uu
               WHERE p.campaign_id = $1
               GROUP BY p.id, p.campaign_id, p.author, p.created_at, p.updated_at`
 
-	rows, err := r.db.QueryContext(ctx, query, campaignId)
+	rows, err := r.db.QueryContext(ctx, query, id)
 	if err != nil {
 		return nil, database.CheckPostgresError(err)
 	}

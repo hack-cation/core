@@ -12,7 +12,7 @@ import (
 
 type voterService interface {
 	GetCampaigns(ctx context.Context) ([]Campaign, error)
-	GetCampaignById(ctx context.Context, uuid uuid.UUID) (*Campaign, error)
+	GetCampaignById(ctx context.Context, id uuid.UUID) (*Campaign, error)
 	GetProjectsForCampaign(ctx context.Context, campaignId uuid.UUID) ([]Project, error)
 	InsertVotes(ctx context.Context, campaignId uuid.UUID, projectIds []uuid.UUID) error
 }
@@ -53,6 +53,40 @@ func (h *Handler) GetCampaigns() http.Handler {
 	})
 }
 
+func (h *Handler) GetCampaignById() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx, cancel := context.WithTimeout(r.Context(), api.DefaultContextTimeout)
+		defer cancel()
+
+		v := validator.New()
+		id := api.ReadUUIDPath(r, "id", v)
+		if !v.Valid() {
+			api.FailedValidationResponse(w, r, h.logger, v.Errors)
+			return
+		}
+
+		campaign, err := h.service.GetCampaignById(ctx, id)
+		if err != nil {
+			switch {
+			case errors.Is(err, context.DeadlineExceeded):
+				api.TimeoutResponse(w, r, h.logger)
+				return
+			case errors.Is(err, ErrCampaignNotFound):
+				api.NotFoundResponse(w, r, h.logger)
+				return
+			default:
+				api.ServerErrorResponse(w, r, h.logger, err)
+				return
+			}
+		}
+
+		err = api.WriteJson(w, http.StatusOK, api.Envelope{"campaign": campaign}, nil)
+		if err != nil {
+			api.ServerErrorResponse(w, r, h.logger, err)
+		}
+	})
+}
+
 func (h *Handler) InsertVotes() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(r.Context(), api.DefaultContextTimeout)
@@ -78,7 +112,7 @@ func (h *Handler) InsertVotes() http.Handler {
 			case errors.Is(err, context.DeadlineExceeded):
 				api.TimeoutResponse(w, r, h.logger)
 				return
-			case errors.Is(err, ErrVotesAreForMultipleCampaigns):
+			case errors.Is(err, ErrVotesNotForCampaign):
 				api.UnprocessableEntityResponse(w, r, h.logger, err)
 				return
 			case errors.Is(err, ErrCampaignNotLive):
