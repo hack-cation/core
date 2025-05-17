@@ -7,7 +7,7 @@ export const useUniqueId = () => React.useContext(IdContext);
 
 export function ContextProvider({children}) {
   return (
-    <IdContext.Provider>
+    <IdContext.Provider value={uniqueId()}>
       {children}
     </IdContext.Provider>
   );
