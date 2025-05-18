@@ -5,7 +5,7 @@ export const meta = () => [
   { name: 'description', content: 'DVD loading screen for voter page of .hack//cation' }
 ];
 
-export default function DvD() {
+export default function DvDRoute() {
   return (
     <>
       <DvDScreen />

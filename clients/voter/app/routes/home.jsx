@@ -10,8 +10,7 @@ export const meta = () => [
 
 export async function loader() {
   try {
-    const  {campaigns} = await api.getCampaigns();
-
+    const  {campaigns} = await api.getCampaigns(true);
     return {campaigns: campaigns || []};
   } catch {
     return {campaigns: []};
@@ -37,7 +36,7 @@ export function HydrateFallback() {
   )
 }
 
-export default function HomePage({loaderData}) {
+export default function HomeRoute({loaderData}) {
   const {isReturningGuest, campaigns} = loaderData;
 
   return (
@@ -53,7 +52,10 @@ export default function HomePage({loaderData}) {
       <ul className="campaigns-list">
         {campaigns.map(({id, name, eventDate, isActive}, index) => (
           <li key={`campaign_${id}_${index}`}>
-            <NavLink to={`/campaign/${id}`} className={'campaign-item ' + (isActive && 'campaign-item--active')}>
+            <NavLink
+                to={isActive ? `/campaign/${id}/vote` : `/campaign/${id}`}
+                className={'campaign-item ' + (isActive && 'campaign-item--active')}
+            >
               <div>
                 <span className="campaign-item__name">{name}</span>
                 <div className="campaign-item__date">{(new Date(eventDate)).toDateString()}</div>

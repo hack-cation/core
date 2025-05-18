@@ -1,6 +1,6 @@
 import { api } from '../api';
-import { RankingsPage } from '../components/RankingsPage/RankingsPage';
-import { VotePage } from '../components/VotePage/VotePage';
+import { RankingsPage } from '../pages/RankingsPage/RankingsPage';
+import { VotePage } from '../pages/VotePage/VotePage';
 import { hasUniqueId } from '../utils/uniqueId';
 
 export async function loader({params}) {
@@ -32,7 +32,7 @@ export function HydrateFallback() {
   return <div>Loading...</div>;
 }
 
-export default function CampaignPage({loaderData}) {
+export default function CampaignRoute({loaderData}) {
   const {campaign, projects, isReturningGuest} = loaderData;
 
   if (campaign.isActive) {
