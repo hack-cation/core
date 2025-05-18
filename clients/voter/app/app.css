@@ -10,7 +10,7 @@
 }
 
 * {
-  font-family: var(--font-sans);
+  font-family: var(--font-sans), serif;
 }
 
 html,
@@ -28,7 +28,7 @@ header {
   top: 0;
   position: sticky;
   background-color: inherit;
-  box-shadow: 0px 20px 50px azure;
+  box-shadow: 0 20px 50px azure;
   z-index: 1;
 
   h1 {

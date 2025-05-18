@@ -88,6 +88,7 @@ func (r *PgRepository) getProjectsForCampaign(ctx context.Context, id uuid.UUID)
 	query := `SELECT 
     				p.id, 
     				p.campaign_id, 
+    				p.name,
     				p.author,
     				p.git_url,
     				p.created_at,
@@ -106,8 +107,8 @@ func (r *PgRepository) getProjectsForCampaign(ctx context.Context, id uuid.UUID)
 	res := make([]Project, 0)
 	for rows.Next() {
 		var project Project
-		err := rows.Scan(&project.Id, &project.CampaignId, &project.Author, &project.GitUrl, &project.CreatedAt,
-			&project.UpdatedAt, &project.Votes)
+		err := rows.Scan(&project.Id, &project.CampaignId, &project.Name, &project.Author, &project.GitUrl,
+			&project.CreatedAt, &project.UpdatedAt, &project.Votes)
 		if err != nil {
 			return nil, database.CheckPostgresError(err)
 		}

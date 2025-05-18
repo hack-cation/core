@@ -11,6 +11,19 @@ hackcation.dev {
 
 # api subdomain
 api.hackcation.dev {
+    header {
+        Access-Control-Allow-Origin "https://voter.hackcation.dev https://hackcation.dev"
+        Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        Access-Control-Allow-Headers "Content-Type, Authorization"
+        Access-Control-Allow-Credentials true
+        Access-Control-Max-Age 3600
+    }
+
+    @options {
+        method OPTIONS
+    }
+    respond @options 204
+
     reverse_proxy voter-http:8080
 }
 

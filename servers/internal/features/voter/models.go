@@ -18,6 +18,7 @@ type Campaign struct {
 type Project struct {
 	Id         uuid.UUID `json:"id"`
 	CampaignId uuid.UUID `json:"campaignId"`
+	Name       string    `json:"name"`
 	Author     string    `json:"author"`
 	Votes      int       `json:"votes"`
 	GitUrl     string    `json:"gitUrl"`
