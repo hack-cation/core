@@ -38,6 +38,9 @@ services:
       - voter-server
     networks:
       - hackcation-dev-network
+    volumes:
+      - ../../clients/voter:/app
+      - /app/node_modules
 
 
 networks:
