@@ -1,6 +1,6 @@
 import {VotePage} from "../pages/VotePage/VotePage.jsx";
 import {useNavigate} from "react-router";
-import {useEffect} from "react";
+import {useCallback, useEffect} from "react";
 import {api} from "../api.js";
 import {hasUniqueId} from "../utils/uniqueId.js";
 
@@ -12,8 +12,8 @@ export const meta = () => [
 export async function loader({params}) {
     try {
         const campaignId = params.campaignId;
-        const {campaign} = await api.getCampaign(true, campaignId)
-        const {projects} = await api.getCampaignProjects(true, campaignId);
+        const {campaign} = await api.getCampaign(campaignId)
+        const {projects} = await api.getCampaignProjects(campaignId);
         return {
             campaign: campaign || {},
             projects: projects || []
@@ -51,16 +51,22 @@ export default function VoteRoute({loaderData}) {
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (!campaign.isActive) {
+        if (campaign && !campaign.isActive) {
             navigate(`/campaign/${campaign.id}`)
         }
-    }, [campaign.isActive, navigate])
+    }, [campaign, navigate])
+
+    const onSubmitVotes = async (votes) => {
+        await api.postVotes(campaign.id, votes)
+        navigate(`/campaign/${campaign.id}`)
+    };
 
     return (
         <VotePage
-            {...campaign}
+            name={campaign.name}
+            maxVotes={campaign.maxVotes}
             projects={projects}
-            isReturningGuest={isReturningGuest}
+            onSubmitVotes={onSubmitVotes}
         />
     );
 }

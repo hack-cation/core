@@ -35,16 +35,6 @@ export function HydrateFallback() {
 export default function CampaignRoute({loaderData}) {
   const {campaign, projects, isReturningGuest} = loaderData;
 
-  if (campaign.isActive) {
-    return (
-      <VotePage
-        {...campaign}
-        projects={projects}
-        isReturningGuest={isReturningGuest}
-      />
-    );
-  }
-
   return <RankingsPage {...campaign} projects={projects} />;
 }
 

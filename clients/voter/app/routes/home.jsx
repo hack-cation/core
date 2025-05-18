@@ -10,7 +10,7 @@ export const meta = () => [
 
 export async function loader() {
   try {
-    const  {campaigns} = await api.getCampaigns(true);
+    const  {campaigns} = await api.getCampaigns();
     return {campaigns: campaigns || []};
   } catch {
     return {campaigns: []};

@@ -1,26 +1,45 @@
-import dotenv from 'dotenv';
+let API_BASE_URL;
 
-dotenv.config();
+if (import.meta.env.SSR) {
+  API_BASE_URL = import.meta.env.VITE_LOCAL_SERVER_API_URL;
+  if (!API_BASE_URL) {
+    throw new Error(
+        `Server-side API base URL (VITE_LOCAL_SERVER_API_URL) is not defined. ` +
+        `This is required when import.meta.env.SSR is true.`
+    );
+  }
+} else {
+  API_BASE_URL = import.meta.env.MODE === 'development'
+      ? import.meta.env.VITE_DEV_API_URL
+      : import.meta.env.VITE_PROD_API_URL;
 
-export const API_URL = process.env.NODE_ENV === 'development' ? process.env.DEV_API : process.env.PROD_API;
-export const ON_SERVER_URL = process.env.LOCAL_SERVER_API
+  if (!API_BASE_URL) {
+    const mode = import.meta.env.MODE;
+    throw new Error(
+        `Client-side API base URL is not defined for mode: ${mode}. ` +
+        `Ensure VITE_DEV_API_URL (for development) and VITE_PROD_API_URL (for production) are set.`
+    );
+  }
+}
 
-export async function api(onServer, path, init) {
-  const url = `${onServer ? ON_SERVER_URL : API_URL}/${path}`
-  console.log(`making api request to ${url}`)
+export async function api(path, init) {
+  const url = `${API_BASE_URL}/${path}`
   const response = await fetch(url, init);
-  console.log(`got response from ${url} with status ${response.status}`)
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  return await response.json();
+
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    return await response.json();
+  }
 }
 
 // For using with your local docker environment and production
-api.getCampaigns = (onServer) => api(onServer, 'campaigns');
-api.getCampaign = (onServer, campaignId) => api(onServer,'campaigns/' + campaignId);
-api.getCampaignProjects = (onServer, campaignId) => api(onServer,`campaigns/${campaignId}/projects`);
-api.postVotes = (onServer, campaignId, projectIds) => api(onServer, `campaigns/${campaignId}/votes`, {
+api.getCampaigns = () => api('campaigns');
+api.getCampaign = (campaignId) => api('campaigns/' + campaignId);
+api.getCampaignProjects = (campaignId) => api(`campaigns/${campaignId}/projects`);
+api.postVotes = (campaignId, projectIds) => api(`campaigns/${campaignId}/votes`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
