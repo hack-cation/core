@@ -4,8 +4,7 @@ if (import.meta.env.SSR) {
   API_BASE_URL = import.meta.env.VITE_LOCAL_SERVER_API_URL;
   if (!API_BASE_URL) {
     throw new Error(
-        `Server-side API base URL (VITE_LOCAL_SERVER_API_URL) is not defined. ` +
-        `This is required when import.meta.env.SSR is true.`
+        'Server-side API base URL (VITE_LOCAL_SERVER_API_URL) is not defined.'
     );
   }
 } else {
@@ -16,8 +15,7 @@ if (import.meta.env.SSR) {
   if (!API_BASE_URL) {
     const mode = import.meta.env.MODE;
     throw new Error(
-        `Client-side API base URL is not defined for mode: ${mode}. ` +
-        `Ensure VITE_DEV_API_URL (for development) and VITE_PROD_API_URL (for production) are set.`
+        `Client-side API base URL is not defined for mode: ${mode}. `
     );
   }
 }
