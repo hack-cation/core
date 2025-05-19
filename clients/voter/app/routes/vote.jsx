@@ -2,7 +2,7 @@ import {VotePage} from "../pages/VotePage/VotePage.jsx";
 import {useNavigate} from "react-router";
 import {useCallback, useEffect} from "react";
 import {api} from "../api.js";
-import {hasUniqueId} from "../utils/uniqueId.js";
+import {getHasVoted, setHasVoted} from "../utils/uniqueId.js";
 
 export const meta = () => [
     { title: '.hack//voter' },
@@ -28,9 +28,12 @@ export async function loader({params}) {
 
 export async function clientLoader({serverLoader}) {
     const {campaign, projects} = await serverLoader();
-    const isReturningGuest = hasUniqueId();
+    let hasVoted = false;
+    if (campaign && campaign.id) {
+        hasVoted = getHasVoted(campaign.id);
+    }
     return {
-        isReturningGuest,
+        hasVoted,
         campaign,
         projects
     };
@@ -47,17 +50,18 @@ export function HydrateFallback() {
 }
 
 export default function VoteRoute({loaderData}) {
-    const {isReturningGuest, campaign, projects} = loaderData;
+    const {hasVoted, campaign, projects} = loaderData;
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (campaign && !campaign.isActive) {
+        if ((campaign && !campaign.isActive) || hasVoted) {
             navigate(`/campaign/${campaign.id}`)
         }
-    }, [campaign, navigate])
+    }, [campaign, hasVoted, navigate])
 
     const onSubmitVotes = async (votes) => {
         await api.postVotes(campaign.id, votes)
+        setHasVoted(campaign.id);
         navigate(`/campaign/${campaign.id}`)
     };
 

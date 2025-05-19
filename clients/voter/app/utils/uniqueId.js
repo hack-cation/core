@@ -14,3 +14,14 @@ export function hasUniqueId() {
   const id = window.localStorage.getItem(KEY_UUID);
   return Boolean(id);
 }
+
+export function getHasVoted(campaignId) {
+  const id = uniqueId();
+  const hasVoted = window.localStorage.getItem(`voted-${id}-${campaignId}`);
+  return Boolean(hasVoted)
+}
+
+export function setHasVoted(campaignId) {
+  const id = uniqueId();
+  window.localStorage.setItem(`voted-${id}-${campaignId}`, 'true')
+}
