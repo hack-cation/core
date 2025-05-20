@@ -1,41 +1,85 @@
-import { api } from '../api';
-import { RankingsPage } from '../pages/RankingsPage/RankingsPage';
-import { VotePage } from '../pages/VotePage/VotePage';
-import { hasUniqueId } from '../utils/uniqueId';
+import {api} from '../api';
+import {RankingsPage} from '../pages/RankingsPage/RankingsPage';
+import {hasUniqueId} from '../utils/uniqueId';
+import {useEffect, useState} from "react";
+
+export const meta = () => [
+    {title: '.hack//voter'},
+    {name: 'description', content: 'page to view the rankings of a campaigns projects'}
+];
 
 export async function loader({params}) {
-  try {
-    const campaignId = params.campaignId;
-    const campaignData = await api.getCampaign(campaignId);
-    const projectData = await api.getCampaignProjects(campaignId);
-    return {
-      campaign: {...campaignData?.campaign},
-      projects: [...projectData?.projects]
-    };
-  } catch {
-     return {
-      campaign: {},
-      projects: []
-    };
-  }
+    try {
+        const campaignId = params.campaignId;
+        const {campaign} = await api.getCampaign(campaignId)
+        const {projects} = await api.getCampaignProjects(campaignId);
+        return {
+            campaign: campaign || {},
+            projects: projects || []
+        };
+    } catch {
+        return {
+            campaign: {},
+            projects: []
+        };
+    }
 }
 
+
 export async function clientLoader({serverLoader}) {
-  const serverData = await serverLoader();
-  const isReturningGuest = hasUniqueId();
-  return {...serverData, isReturningGuest};
+    const serverData = await serverLoader();
+    const isReturningGuest = hasUniqueId();
+    return {...serverData, isReturningGuest};
 }
 
 clientLoader.hydrate = true;
 
 export function HydrateFallback() {
-  return <div>Loading...</div>;
+    return <marquee>Loading...</marquee>;
 }
 
 export default function CampaignRoute({loaderData}) {
-  const {campaign, projects, isReturningGuest} = loaderData;
+    const {campaign: campaignData, projects: projectData, isReturningGuest} = loaderData;
 
-  return <RankingsPage {...campaign} projects={projects} />;
+    const [campaign, setCampaign] = useState(campaignData);
+    const [projects, setProjects] = useState(projectData);
+
+    useEffect(() => {
+        let intervalId
+        let isMounted = true;
+        const worker = async () => {
+            try {
+                console.log("Fetching campaign data...");
+                const {campaign: camp} = await api.getCampaign(campaign.id);
+                const {projects: projs} = await api.getCampaignProjects(campaign.id);
+                console.log("Fetched campaign data.");
+
+                if (isMounted) {
+                    setProjects(projs);
+                }
+
+                if (isMounted && !camp.isActive) {
+                    setCampaign(camp);
+                    clearInterval(intervalId);
+                }
+            } catch (error) {
+                console.error("Error fetching campaign data: ", error);
+            }
+        };
+
+        if (campaign && campaign.isActive) {
+            intervalId = setInterval(worker, 1000);
+        }
+
+        return () => {
+            isMounted = false;
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+        }
+    }, []);
+
+    return <RankingsPage {...campaign} projects={projects}/>;
 }
 
 

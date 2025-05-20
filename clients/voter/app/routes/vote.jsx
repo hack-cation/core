@@ -59,11 +59,11 @@ export default function VoteRoute({loaderData}) {
         }
     }, [campaign, hasVoted, navigate])
 
-    const onSubmitVotes = async (votes) => {
+    const onSubmitVotes = useCallback(async (votes) => {
         await api.postVotes(campaign.id, votes)
         setHasVoted(campaign.id);
         navigate(`/campaign/${campaign.id}`)
-    };
+    }, [campaign.id, navigate]);
 
     return (
         <VotePage

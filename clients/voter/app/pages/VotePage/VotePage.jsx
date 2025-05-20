@@ -81,7 +81,7 @@ export function VotePage({ name, maxVotes, projects, onSubmitVotes }) {
                                 onClick={handleVoteSubmission}
                                 disabled={votes.length === 0}
                                 className={`
-                                    px-10 py-5 text-base font-semibold text-white rounded-lg shadow-md
+                                    px-10 py-5 w-64 text-base font-semibold text-white rounded-lg shadow-md
                                     focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100
                                     transition-all duration-250 ease-in-out hover:scale-105
                                     ${votes.length === 0
