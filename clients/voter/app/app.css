@@ -6,111 +6,119 @@
 @import 'tailwindcss/utilities.css' layer(utilities);
 
 @theme {
-  --font-sans: 'Work Sans';
+    --font-sans: 'Work Sans';
+
+    --color-gold: #D4AF37;
+    --color-silver: #C0C0C0;
+    --color-bronze: #CD7F32;
+
+    --color-gold-contrast: #6A4F00;
+    --color-silver-contrast: #2D3748;
+    --color-bronze-contrast: #4A2E0A;
 }
 
 * {
-  font-family: var(--font-sans), serif;
+    font-family: var(--font-sans), sans-serif;
 }
 
 html,
 body {
-  background-color: azure;
-  font-size: 16px;
+    background-color: azure;
+    font-size: 16px;
 }
 
 h2 {
-  @apply text-5xl;
-  padding: 25px 30px;
+    @apply text-5xl;
+    padding: 25px 30px;
 }
 
 header {
-  top: 0;
-  position: sticky;
-  background-color: inherit;
-  box-shadow: 0 20px 50px azure;
-  z-index: 1;
+    top: 0;
+    position: sticky;
+    background-color: inherit;
+    box-shadow: 0 20px 50px azure;
+    z-index: 1;
 
-  h1 {
-    transition: all 300ms ease;
+    h1 {
+        transition: all 300ms ease;
 
-    font-size: 40px;
-    
-    @media (width > 500px) {
-      font-size: 50px;
+        font-size: 40px;
+
+        @media (width > 500px) {
+            font-size: 50px;
+        }
+        @media (width > 600px) {
+            font-size: 60px;
+        }
+        @media (width > 700px) {
+            font-size: 70px;
+        }
     }
-    @media (width > 600px) {
-      font-size: 60px;
-    }
-    @media (width > 700px) {
-      font-size: 70px;
-    }
-  }
 }
 
 a {
-  display: block;
-  padding: 30px;
+    display: block;
+    padding: 30px;
 }
 
 .campaigns-list {
-  .campaign-item {
-    border: 1px solid gray;
-    margin:10px;
-    padding: 20px;
-    transition: all 300ms ease;
-    border-radius: 10px;
-    border-bottom-left-radius: 30px 80px;
-    border-top-right-radius: 30px 80px;
-    background-color: ghostwhite;
-    display: flex;
-    align-items: center;
+    .campaign-item {
+        border: 1px solid gray;
+        margin: 10px;
+        padding: 20px;
+        transition: all 300ms ease;
+        border-radius: 10px;
+        border-bottom-left-radius: 30px 80px;
+        border-top-right-radius: 30px 80px;
+        background-color: ghostwhite;
+        display: flex;
+        align-items: center;
 
-    &:hover, &:focus {
-      border-width: 4px;
-      border-radius: 20px;
-      border-bottom-left-radius: 50px 100px;
-      border-top-right-radius: 50px 100px;
-      background-color: bisque;
+        &:hover, &:focus {
+            border-width: 4px;
+            border-radius: 20px;
+            border-bottom-left-radius: 50px 100px;
+            border-top-right-radius: 50px 100px;
+            background-color: bisque;
 
-      .campaign-item__name {
-        font-weight: bolder;
-        font-size: 20px;
-      }
+            .campaign-item__name {
+                font-weight: bolder;
+                font-size: 20px;
+            }
 
-      .campaign-item__date {
-        font-size: 10px;
-      }
+            .campaign-item__date {
+                font-size: 10px;
+            }
 
-      .campaign-item__status {
-        opacity: 1;
-      }
+            .campaign-item__status {
+                opacity: 1;
+            }
+        }
     }
-  }
 
-  .campaign-item--active {
-    background-color: aliceblue;
-    
-    &:hover, &:focus {
-      background-color: honeydew;
+    .campaign-item--active {
+        background-color: aliceblue;
+
+        &:hover, &:focus {
+            background-color: honeydew;
+        }
     }
-  }
 
-  .campaign-item__name {
-    transition: all 300ms ease;
-    font-size: 18px;
-  }
+    .campaign-item__name {
+        transition: all 300ms ease;
+        font-size: 18px;
+    }
 
-  .campaign-item__date {
-    transition: all 300ms ease;
-    font-size: 12px;
-    margin-left: 12px;
-  }
+    .campaign-item__date {
+        transition: all 300ms ease;
+        font-size: 12px;
+        margin-left: 12px;
+    }
 
-  .campaign-item__status {
-    opacity: 0;
-    font-weight: bold;
-    padding: 0 0 0 40px;
-    color: rgba(0, 0, 0, 0.7);
-  }
+    .campaign-item__status {
+        opacity: 0;
+        font-weight: bold;
+        padding: 0 0 0 40px;
+        color: rgba(0, 0, 0, 0.7);
+    }
 }

@@ -16,14 +16,13 @@ export function VotePage({ name, maxVotes, projects, onSubmitVotes }) {
                     return [...prevVotes, projectId]
                 });
             }
-
         }
     };
 
     const handleVoteSubmission = async () => {
-      if (onSubmitVotes && votes.length > 0) {
-          await onSubmitVotes(votes);
-      }
+        if (onSubmitVotes && votes.length > 0) {
+            await onSubmitVotes(votes);
+        }
     };
 
     return (
@@ -40,37 +39,36 @@ export function VotePage({ name, maxVotes, projects, onSubmitVotes }) {
                         {projects.map((project) => (
                             <div
                                 key={project.id}
-                                className={`${votes.includes(project.id) ? 'bg-green-200' : 'bg-slate-200'} rounded-lg 
-                            shadow-lg p-4 hover:scale-105 transition-all duration-300 ease-in-out flex cursor-pointer
-                            flex-col justify-between`}
+                                className={`${votes.includes(project.id) ? 'bg-emerald-200/75' : 'bg-white'} 
+                                    rounded-lg shadow-lg p-6 hover:shadow-xl hover:scale-105 
+                                    transition-all duration-300 ease-in-out flex flex-col 
+                                    justify-between cursor-pointer`}
                                 onClick={(e) => toggleVote(e, project.id)}
                             >
-                                <div>
+                                <div className="flex-grow">
                                     <h4 className="text-xl font-semibold text-gray-800 mb-3 truncate">
                                         {project.name}
                                     </h4>
                                     <div className="text-sm text-gray-600 mb-2">
                                         Submitted by: <span className="font-medium text-gray-700">{project.author || 'N/A'}</span>
                                     </div>
-                                    {project.gitUrl && (
-                                        <div className="mt-10 flex justify-center">
-                                            <a
-                                                href={ensureAbsoluteUrl(project.gitUrl)}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-block text-sm font-semibold leading-none
-                                            text-white bg-slate-500 hover:bg-slate-600 rounded-lg shadow
-                                             hover:shadow-md transition-all duration-300 ease-in-out focus:outline-none
-                                             focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                }}
-                                            >
-                                                View Project Source
-                                            </a>
-                                        </div>
-                                    )}
                                 </div>
+                                {project.gitUrl && (
+                                    <div className="mt-4 pt-4 border-t border-gray-200 text-center">
+                                        <a
+                                            href={ensureAbsoluteUrl(project.gitUrl)}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-indigo-600 hover:text-indigo-900 font-medium text-sm
+                                            transition-colors duration-150 hover:underline"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                            }}
+                                        >
+                                            View Project Source
+                                        </a>
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -86,8 +84,8 @@ export function VotePage({ name, maxVotes, projects, onSubmitVotes }) {
                                     transition-all duration-250 ease-in-out hover:scale-105
                                     ${votes.length === 0
                                     ? 'bg-gray-400 cursor-not-allowed'
-                                    : 'bg-slate-700 hover:bg-slate-800 focus:ring-slate-600' 
-                                    }
+                                    : 'bg-slate-700 hover:bg-slate-800 focus:ring-slate-600'
+                                }
                                 `}
                             >
                                 Submit {votes.length > 0 ? `${votes.length} Vote${votes.length !== 1 ? 's' : ''}` :

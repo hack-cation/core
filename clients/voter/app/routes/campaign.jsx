@@ -42,20 +42,18 @@ export default function CampaignRoute({loaderData}) {
     const {campaign: campaignData, projects: projectData, isReturningGuest} = loaderData;
 
     const [campaign, setCampaign] = useState(campaignData);
-    const [projects, setProjects] = useState(projectData);
+    const [projects, setProjects] = useState(projectData.sort((a, b) => b.votes - a.votes));
 
     useEffect(() => {
         let intervalId
         let isMounted = true;
         const worker = async () => {
             try {
-                console.log("Fetching campaign data...");
                 const {campaign: camp} = await api.getCampaign(campaign.id);
                 const {projects: projs} = await api.getCampaignProjects(campaign.id);
-                console.log("Fetched campaign data.");
 
                 if (isMounted) {
-                    setProjects(projs);
+                    setProjects(projs.sort((a, b) => b.votes - a.votes));
                 }
 
                 if (isMounted && !camp.isActive) {

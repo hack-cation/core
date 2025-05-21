@@ -7,7 +7,7 @@
     "@react-router/dev": "7.5.3",
     "@tailwindcss/vite": "^4.1.4",
     "react-router-devtools": "^1.1.10",
-    "tailwindcss": "^4.1.4",
+    "tailwindcss": "^4.1.7",
     "vite": "^6.3.3"
   },
   "dependencies": {
