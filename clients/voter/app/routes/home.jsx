@@ -40,7 +40,7 @@ export default function HomeRoute({loaderData}) {
     const {isReturningGuest, campaigns} = loaderData;
 
     return (
-        <main className="home-page" data-guest={isReturningGuest}>
+        <main className="home-page container mx-auto" data-guest={isReturningGuest}>
             {isReturningGuest &&
                 <marquee>
                     <Text content="Welcome back!"/>
