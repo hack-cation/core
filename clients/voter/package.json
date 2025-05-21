@@ -11,6 +11,7 @@
     "vite": "^6.3.3"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.8.2",
     "@phxjs/ui": "phxjs/ui",
     "@react-router/node": "7.5.3",
     "@react-router/serve": "7.5.3",

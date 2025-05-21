@@ -1,6 +1,9 @@
 import {ensureAbsoluteUrl} from "../../utils/absoluteUrl.js";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export function RankingsPage({id, name, maxVotes, eventDate, isActive, projects}) {
+    const [animationParent] = useAutoAnimate();
+
     return (
         <main className="container mx-auto p-4 md:p-8">
             {
@@ -32,7 +35,7 @@ export function RankingsPage({id, name, maxVotes, eventDate, isActive, projects}
             }
             <div>
                 {projects && projects.length > 0 ? (
-                    <div className="mt-8 md:mt-12">
+                    <div ref={animationParent} className="mt-8 md:mt-12">
                         {projects.map((project, index) => {
                             const rank = index + 1;
 
@@ -41,12 +44,13 @@ export function RankingsPage({id, name, maxVotes, eventDate, isActive, projects}
                                  space-x-4 sm:space-x-6 hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out">
                                     <div className={`flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-full flex
                                      items-center justify-center text-xl sm:text-2xl font-bold
-                    ${rank === 1 ? 'bg-gold text-gold-contrast ring-2 ring-gold-contrast' :
-                                        rank === 2 ? 'bg-silver text-silver-contrast ring-2 ring-silver-contrast' :
-                                            rank === 3 ? 'bg-bronze text-bronze-contrast ring-2 ring-bronze-contrast' :
+                    ${rank === 1 && project.votes !== 0 ? 'bg-gold text-gold-contrast ring-2 ring-gold-contrast' :
+                                        rank === 2 && project.votes !== 0 ? 'bg-silver text-silver-contrast ring-2 ring-silver-contrast' :
+                                            rank === 3 && project.votes !== 0 ? 'bg-bronze text-bronze-contrast ring-2 ring-bronze-contrast' :
                                                 'bg-slate-200 text-slate-700'
                                     }`}>
-                                        {rank === 1 && <span role="img" aria-label="trophy" className="mr-1 sm:mr-1.5">
+                                        {(rank === 1 && project.votes !== 0) && <span role="img" aria-label="trophy"
+                                                                                      className="mr-1 sm:mr-1.5">
                                             🏆
                                         </span>}
                                         {rank}
@@ -75,8 +79,9 @@ export function RankingsPage({id, name, maxVotes, eventDate, isActive, projects}
                                 </div>
                             )
 
-                            return project.gitUrl ? (
+                            return (
                                 <a
+                                    key={project.id}
                                     href={ensureAbsoluteUrl(project.gitUrl)}
                                     target="_blank"
                                     rel="noopener noreferrer"
@@ -84,7 +89,7 @@ export function RankingsPage({id, name, maxVotes, eventDate, isActive, projects}
                                 >
                                     {cardContent}
                                 </a>
-                            ) : cardContent;
+                            );
                         })}
                     </div>
                 ) : (
