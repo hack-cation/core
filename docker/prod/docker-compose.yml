@@ -4,7 +4,7 @@ services:
     env_file:
       - ../../servers/.env
     ports:
-      - "8080:8080"
+      - "5432:5432"
     networks:
       - hackcation-prod-network
     volumes:
