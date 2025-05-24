@@ -30,10 +30,42 @@
 </head>
 
 <body>
-
+  
   <header>
-    <strong>.hack//</strong><code>cation</code> 2025!
+    <h1><strong>.hack//</strong><code>cation</code> 2025!</h1>
+
+    <button 
+      type="button"
+      id="schedule-btn"
+      class="nes-btn is-primary"
+      onclick="document.getElementById('dialog-schedule').showModal();">
+      Schedule
+    </button>
   </header>
+
+  <dialog class="nes-dialog" id="dialog-schedule" ondblclick="document.getElementById('thanks').classList.toggle('hidden')">
+    <div class="nes-dialog__header flex">
+      <span class="title nes-text is-primary flex-1">Schedule</span>
+      
+      <form method="dialog">
+        <menu class="dialog-menu">
+          <button class="nes-btn" value="close" formmethod="dialog">close</button>
+        </menu>
+      </form>
+    </div>
+    
+    <p><time datetime="2025-05-24T11:00">11:00</time> Open Doors & Register</p>
+    <p><time datetime="2025-05-24T11:30">11:30</time> Pizza & Presentation of Competition and Goals</p>
+    <p><time datetime="2025-05-24T11:45">11:45</time> First Presentation: Crash Course into iOS</p>
+    <p><time datetime="2025-05-24T12:45">12:45</time> Second Presentation: Crash Course into Web with React and Vite</p>
+    <p><time datetime="2025-05-24T14:00">14:00</time> Stretch and Mini Challenge #1</p>
+    <p class="hidden" id="thanks"><time datetime="2025-05-24T15:00">15:00</time> Celebrate!?!</p>
+    <p><time datetime="2025-05-24T16:00">16:00</time> Another Stretch and Mini Challenge #2</p>
+    <p><time datetime="2025-05-24T18:00">18:00</time> Final Stretch and Start turning in Submissions</p>
+    <p><time datetime="2025-05-24T19:00">19:00</time> End of Competition Submissions! Time for Show & Tell</p>
+    <p><div>Near the End...</div>Vote and Place!</p>
+      
+  </dialog>
 
   <section id="intro1">
    <h2>A Live-Action Pokédex of Innovation!</h2>
@@ -121,7 +153,6 @@
   <footer>
     <p>Let’s code, let’s create, and let’s catch 'em all — one idea at a time.</p>
   </footer>
-
 </body>
 
 </html>

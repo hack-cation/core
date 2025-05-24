@@ -55,13 +55,16 @@
      width: 100%;                                          /* Full width of the viewport */
      padding: 20px;                                        /* Internal spacing */
      text-align: center;                                   /* Centered text */
-     font-size: 2em;                                       /* Large font size */
      font-weight: bold;                                    /* Emphasized text */
      border-bottom: 3px solid #ffab76;                     /* Thin orange border at the bottom */
      box-shadow: 0 4px 10px rgba(255, 111, 0, 0.3);         /* Subtle drop shadow below header */
      position: sticky;                                     /* Sticks to top during scroll */
      top: 0;                                               /* Position from the top edge */
      z-index: 1;                                           /* Ensures header appears above other elements */
+     
+     h1 {
+      font-size: 2em;                                   /* Large font size */
+     }
    }
    
    
@@ -204,4 +207,39 @@
      margin-top: 20px;                                     /* Space above the map */
      border-radius: 10px;                                  /* Rounded corners to match other UI elements */
    }
-   
+
+#schedule-btn {
+  position: absolute;
+  top: 120px;
+  right: 10px;
+  z-index: 20;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+#dialog-schedule {
+  time {
+    display: block;
+  }
+}
+
+.nes-dialog {
+  padding-top: 0;
+}
+
+.nes-dialog__header {
+  position: sticky;
+  top: 0;
+  background-color: inherit;
+}
+
+.hidden {
+  display: none;
+}
