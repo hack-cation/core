@@ -1,0 +1,63 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* Full screen for the slideshow */
+#slideshow-container {
+    width: 100%;
+    /* Full viewport height */
+    height: 100vh; 
+    overflow: hidden;
+    /* For positioning slides inside */
+    position: relative; 
+}
+
+
+
+/* The individual slides */
+.slide {
+    /* Initially hide all slides */
+    display: none; 
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    /* Slides are positioned on top of each other */
+    position: absolute; 
+    top: 0;
+    left: 0;
+    padding: 20px;
+    /* Light grey background */
+    background-color: #f0f0f0; 
+     /* A border around the slides */
+    border: 1px solid #ccc;
+}
+
+
+/* Transition fade effect */
+.fade {
+    animation: fadeEffect 1.5s ease-in-out;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+.fade.show {
+    opacity: 1;
+}
+
+
+@keyframes fadeEffect {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+
