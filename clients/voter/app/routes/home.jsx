@@ -2,7 +2,7 @@ import {NavLink} from 'react-router';
 import {Text} from '@phxjs/ui/Text/Text';
 import {api} from '../api';
 import {getHasVoted, hasUniqueId} from '../utils/uniqueId';
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 
 export const meta = () => [
     {title: '.hack//voter'},
