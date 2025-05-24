@@ -1,3 +1,7 @@
+:root {
+    font-size: 40px;
+}
+
 /* Basic Reset */
 * {
     margin: 0;
@@ -5,6 +9,9 @@
     box-sizing: border-box;
 }
 
+main {
+    position: relative;
+}
 
 /* Full screen for the slideshow */
 #slideshow-container {
@@ -34,30 +41,36 @@
     background-color: #f0f0f0; 
      /* A border around the slides */
     border: 1px solid #ccc;
-}
-
-
-/* Transition fade effect */
-.fade {
-    animation: fadeEffect 1.5s ease-in-out;
+    /* fade prep */
     opacity: 0;
     transition: opacity 1s ease;
+    overflow-y: scroll;
+
+    a {
+        display: block;
+    }
 }
-.fade.show {
+
+.slide.show {
+    display: block;
     opacity: 1;
 }
 
+#button-bar {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left:0;
+    display: flex;
+    justify-content: center;
 
-@keyframes fadeEffect {
-    0% {
-        opacity: 0;
-    }
-    50% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
+    button {
+        font-size: 60px;
     }
 }
 
-
+.wordthing {
+    white-space: pre;
+    text-align: left;
+    padding: 0 60px;
+}
