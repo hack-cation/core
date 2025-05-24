@@ -25,11 +25,18 @@ func (app *application) newServer() http.Handler {
 	handler = requestid.RequestID(handler)
 	handler = corsF(handler)
 	handler = recovererF(handler)
-	return handler
+	return app.quickLog(handler)
 }
 
 func ping() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
+	})
+}
+
+func (app *application) quickLog(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		app.config.Logger.Info("request", "uri", r.RequestURI, "method", r.Method)
+		next.ServeHTTP(w, r)
 	})
 }

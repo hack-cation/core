@@ -6,15 +6,15 @@
 
 # home
 hackcation.dev {
-    reverse_proxy home-site:80
+    reverse_proxy /* home-site:80
 }
 
 # api subdomain
 api.hackcation.dev {
-    reverse_proxy voter-http:8080
+    reverse_proxy /* voter-http:8080
 }
 
 # voter app
 voter.hackcation.dev {
-    reverse_proxy voter-app:3000
+    reverse_proxy /* voter-app:3000
 }
