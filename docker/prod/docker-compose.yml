@@ -3,6 +3,8 @@ services:
     image: postgres:latest
     env_file:
       - ../../servers/.env
+    ports:
+      - "8080:8080"
     networks:
       - hackcation-prod-network
     volumes:
