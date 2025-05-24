@@ -13,6 +13,8 @@ services:
     build:
       context: ../../
       dockerfile: docker/prod/servers/voter/Dockerfile
+    ports:
+      - "8080:8080"
     env_file:
       - ../../servers/.env
     depends_on:

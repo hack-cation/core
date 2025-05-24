@@ -10,9 +10,12 @@ export const meta = () => [
 
 export async function loader() {
     try {
+        console.log('loading campaigns');
         const {campaigns} = await api.getCampaigns();
+        console.log('loaded campaigns', campaigns);
         return {campaigns: campaigns || []};
-    } catch {
+    } catch (error) {
+        console.error('error loading campaigns: ', error);
         return {campaigns: []};
     }
 }
