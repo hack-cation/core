@@ -23,6 +23,12 @@ main {
     position: relative; 
 }
 
+li {
+    margin-bottom: 50px;
+    strong {
+        display: block;
+    }
+}
 
 
 /* The individual slides */
