@@ -2,7 +2,6 @@ import {NavLink} from 'react-router';
 import {Text} from '@phxjs/ui/Text/Text';
 import {api} from '../api';
 import {getHasVoted, hasUniqueId} from '../utils/uniqueId';
-import {useEffect, useState} from "react";
 
 export const meta = () => [
     {title: '.hack//voter'},
@@ -21,19 +20,19 @@ export async function loader() {
     }
 }
 
-// export async function clientLoader({serverLoader}) {
-//     console.log('loading campaigns on client');
-//     const {campaigns} = await serverLoader();
-//     console.log('loaded campaigns on client', campaigns);
-//     const isReturningGuest = hasUniqueId();
-//     console.log('isReturningGuest', isReturningGuest);
-//     return {
-//         isReturningGuest,
-//         campaigns
-//     };
-// }
-//
-// clientLoader.hydrate = true;
+export async function clientLoader({serverLoader}) {
+    console.log('loading campaigns on client');
+    const {campaigns} = await serverLoader();
+    console.log('loaded campaigns on client', campaigns);
+    const isReturningGuest = hasUniqueId();
+    console.log('isReturningGuest', isReturningGuest);
+    return {
+        isReturningGuest,
+        campaigns
+    };
+}
+
+clientLoader.hydrate = true;
 
 export function HydrateFallback() {
     return (
@@ -45,13 +44,7 @@ export function HydrateFallback() {
 
 export default function HomeRoute({loaderData}) {
     console.log('home route loaderData', loaderData);
-    const {campaigns} = loaderData;
-
-    const [isReturningGuest, setIsReturningGuest] = useState(false);
-
-    useEffect(() => {
-        setIsReturningGuest(hasUniqueId());
-    }, []);
+    const {isReturningGuest, campaigns} = loaderData;
 
     return (
         <main className="home-page container mx-auto" data-guest={isReturningGuest}>
