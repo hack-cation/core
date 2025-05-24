@@ -22,7 +22,9 @@ if (import.meta.env.SSR) {
 
 export async function api(path, init) {
   const url = `${API_BASE_URL}/${path}`
+  console.log(`api: ${url}`)
   const response = await fetch(url, init);
+  console.log(`api: ${url} response: ${response.status}`)
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
