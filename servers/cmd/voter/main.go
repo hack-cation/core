@@ -15,6 +15,7 @@ import (
 
 type application struct {
 	config      *api.Config
+	apiKey      string
 	voteHandler *voter.Handler
 }
 
@@ -34,7 +35,10 @@ func run() error {
 	}
 	defer db.Close()
 
-	app := newApplication(db)
+	app, err := newApplication(db)
+	if err != nil {
+		return err
+	}
 
 	server := app.newServer()
 
@@ -83,14 +87,20 @@ func openDb(ctx context.Context) (*database.Db, error) {
 	return db, nil
 }
 
-func newApplication(db *database.Db) *application {
+func newApplication(db *database.Db) (*application, error) {
 	port := env.IntEnv(os.Getenv, "PORT", 8080)
 	config := api.NewDefaultConfig(port, os.Getenv("ENV"), vcs.Version())
 
 	vh := voter.NewHandler(config.Logger, voter.NewService(voter.NewPgRepository(db)))
 
+	apiKey, ok := os.LookupEnv("API_KEY")
+	if !ok {
+		return nil, errors.New("API_KEY not set")
+	}
+
 	return &application{
 		config:      config,
+		apiKey:      apiKey,
 		voteHandler: vh,
-	}
+	}, nil
 }

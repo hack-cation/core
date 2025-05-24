@@ -144,3 +144,60 @@ func (r *PgRepository) insertVotes(ctx context.Context, projectIds []uuid.UUID) 
 
 	return nil
 }
+
+func (r *PgRepository) insertCampaign(ctx context.Context, campaign *Campaign) error {
+	query := `INSERT INTO campaigns (id, name, is_active, event_date, max_votes, created_at, updated_at)
+              VALUES ($1, $2, $3, $4, $5, $6, $7)`
+
+	_, err := r.db.ExecContext(ctx, query, campaign.Id, campaign.Name, campaign.IsActive, campaign.EventDate, campaign.MaxVotes,
+		campaign.CreatedAt, campaign.UpdatedAt)
+	if err != nil {
+		err = database.CheckPostgresError(err)
+		if errors.Is(err, database.ErrUniqueViolation) {
+			return ErrCampaignAlreadyExists
+		}
+		return fmt.Errorf("error inserting campaign in repository: %w", err)
+	}
+
+	return nil
+}
+
+func (r *PgRepository) insertProject(ctx context.Context, project *Project) error {
+	query := `INSERT INTO projects (id, campaign_id, name, author, git_url, created_at, updated_at)
+              VALUES ($1, $2, $3, $4, $5, $6, $7)`
+
+	_, err := r.db.ExecContext(ctx, query, project.Id, project.CampaignId, project.Name, project.Author, project.GitUrl,
+		project.CreatedAt, project.UpdatedAt)
+	if err != nil {
+		err = database.CheckPostgresError(err)
+		if errors.Is(err, database.ErrUniqueViolation) {
+			return ErrProjectAlreadyExists
+		}
+		return fmt.Errorf("error inserting project in repository: %w", err)
+	}
+
+	return nil
+}
+
+func (r *PgRepository) updateCampaign(ctx context.Context, campaign *Campaign) error {
+	query := `UPDATE campaigns
+              SET name = $2,
+                  is_active = $3,
+                  event_date = $4,
+                  max_votes = $5,
+                  updated_at = $6
+              WHERE id = $1
+              RETURNING created_at`
+
+	err := r.db.QueryRowContext(ctx, query, campaign.Id, campaign.Name, campaign.IsActive, campaign.EventDate, campaign.MaxVotes,
+		campaign.UpdatedAt).Scan(&campaign.CreatedAt)
+	if err != nil {
+		err = database.CheckPostgresError(err)
+		if errors.Is(err, database.ErrRecordNotFound) {
+			return ErrCampaignNotFound
+		}
+		return fmt.Errorf("error updating campaign in repository: %w", err)
+	}
+
+	return nil
+}

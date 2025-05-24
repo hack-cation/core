@@ -15,6 +15,9 @@ type voterService interface {
 	GetCampaignById(ctx context.Context, id uuid.UUID) (*Campaign, error)
 	GetProjectsForCampaign(ctx context.Context, campaignId uuid.UUID) ([]Project, error)
 	InsertVotes(ctx context.Context, campaignId uuid.UUID, projectIds []uuid.UUID) error
+	InsertCampaign(ctx context.Context, dto *InsertCampaignDto) (*Campaign, error)
+	InsertProject(ctx context.Context, campaignId uuid.UUID, dto *InsertProjectDto) (*Project, error)
+	UpdateCampaign(ctx context.Context, id uuid.UUID, dto *InsertCampaignDto) (*Campaign, error)
 }
 
 type Handler struct {
@@ -162,5 +165,122 @@ func (h *Handler) GetProjectsForCampaign() http.Handler {
 		if err != nil {
 			api.ServerErrorResponse(w, r, h.logger, err)
 		}
+	})
+}
+
+func (h *Handler) InsertCampaign() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx, cancel := context.WithTimeout(r.Context(), api.DefaultContextTimeout)
+		defer cancel()
+
+		var input InsertCampaignDto
+		err := api.ReadJSON(w, r, &input)
+		if err != nil {
+			api.BadRequestResponse(w, r, h.logger, err)
+			return
+		}
+
+		campaign, err := h.service.InsertCampaign(ctx, &input)
+		if err != nil {
+			var vErr validator.ErrFailedValidation
+			switch {
+			case errors.Is(err, context.DeadlineExceeded):
+				api.TimeoutResponse(w, r, h.logger)
+				return
+			case errors.As(err, &vErr):
+				api.FailedValidationResponse(w, r, h.logger, vErr.Reasons)
+				return
+			default:
+				api.ServerErrorResponse(w, r, h.logger, err)
+				return
+			}
+		}
+
+		err = api.WriteJson(w, http.StatusCreated, api.Envelope{"campaign": campaign}, nil)
+		if err != nil {
+			api.ServerErrorResponse(w, r, h.logger, err)
+		}
+	})
+}
+
+func (h *Handler) InsertProject() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx, cancel := context.WithTimeout(r.Context(), api.DefaultContextTimeout)
+		defer cancel()
+
+		v := validator.New()
+		campId := api.ReadUUIDPath(r, "id", v)
+		if !v.Valid() {
+			api.BadRequestResponse(w, r, h.logger, validator.NewErrFailedValidation(v.Errors))
+			return
+		}
+
+		var input InsertProjectDto
+		err := api.ReadJSON(w, r, &input)
+		if err != nil {
+			api.BadRequestResponse(w, r, h.logger, err)
+			return
+		}
+
+		project, err := h.service.InsertProject(ctx, campId, &input)
+		if err != nil {
+			var vErr validator.ErrFailedValidation
+			switch {
+			case errors.Is(err, context.DeadlineExceeded):
+				api.TimeoutResponse(w, r, h.logger)
+				return
+			case errors.As(err, &vErr):
+				api.FailedValidationResponse(w, r, h.logger, vErr.Reasons)
+				return
+			default:
+				api.ServerErrorResponse(w, r, h.logger, err)
+				return
+			}
+		}
+
+		err = api.WriteJson(w, http.StatusCreated, api.Envelope{"project": project}, nil)
+		if err != nil {
+			return
+		}
+	})
+}
+
+func (h *Handler) UpdateCampaign() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx, cancel := context.WithTimeout(r.Context(), api.DefaultContextTimeout)
+		defer cancel()
+
+		v := validator.New()
+		campId := api.ReadUUIDPath(r, "id", v)
+		if !v.Valid() {
+			api.BadRequestResponse(w, r, h.logger, validator.NewErrFailedValidation(v.Errors))
+			return
+		}
+
+		var input InsertCampaignDto
+		err := api.ReadJSON(w, r, &input)
+		if err != nil {
+			api.BadRequestResponse(w, r, h.logger, err)
+			return
+		}
+
+		campaign, err := h.service.UpdateCampaign(ctx, campId, &input)
+		if err != nil {
+			var vErr validator.ErrFailedValidation
+			switch {
+			case errors.Is(err, context.DeadlineExceeded):
+				api.TimeoutResponse(w, r, h.logger)
+				return
+			case errors.As(err, &vErr):
+				api.FailedValidationResponse(w, r, h.logger, vErr.Reasons)
+				return
+			default:
+				api.ServerErrorResponse(w, r, h.logger, err)
+				return
+			}
+		}
+
+		err = api.WriteJson(w, http.StatusOK, api.Envelope{"campaign": campaign}, nil)
+		return
 	})
 }
