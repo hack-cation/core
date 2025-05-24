@@ -57,8 +57,8 @@ export default function HomeRoute({loaderData}) {
             <h2>Join the Campaigns</h2>
 
             <ul className="campaigns-list">
-                {campaigns.map(({id, name, eventDate, isActive}, index) => (
-                    <li key={`campaign_${id}_${index}`}>
+                {campaigns.map(({id, name, eventDate, isActive}) => (
+                    <li key={id}>
                         <NavLink
                             to={isActive && !getHasVoted(id) ? `/campaign/${id}/vote` : `/campaign/${id}`}
                             className={'campaign-item ' + (isActive && 'campaign-item--active')}
